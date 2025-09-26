@@ -11,28 +11,9 @@ import { EyeLab } from "./components/labs/EyeLab";
 import Purpose from "./pages/Purpose";
 import About from "./pages/About";
 import NotFound from "./pages/NotFound";
-import { ParticleTextEffect } from "./components/ui/particle-text-effect";
-import { useState, useEffect } from "react";
-
 const queryClient = new QueryClient();
 
 const AppContent = () => {
-  const [loading, setLoading] = useState(true);
-  const location = useLocation();
-
-  useEffect(() => {
-    if (location.pathname === "/") {
-      // Show animation for 3 seconds on the root page
-      const timer = setTimeout(() => setLoading(false), 21000);
-      return () => clearTimeout(timer);
-    } else {
-      setLoading(false);
-    }
-  }, [location.pathname]);
-
-  if (loading && location.pathname === "/") {
-    return <ParticleTextEffect />;
-  }
 
   return (
     <>
