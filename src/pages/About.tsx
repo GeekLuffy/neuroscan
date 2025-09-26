@@ -161,17 +161,17 @@ const About: React.FC = () => {
               <Card className="glass-card">
                 <CardHeader className="text-center">
                   <Avatar className="w-32 h-32 mx-auto mb-6 border-4 border-purple-400/50">
-                    <AvatarImage src="https://github.com/shadcn.png" alt="Ashwin Kirubakaran" />
-                    <AvatarFallback>AK</AvatarFallback>
+                    <AvatarImage src="https://github.com/shadcn.png" alt="Owais naeem" />
+                    <AvatarFallback>ON</AvatarFallback>
                   </Avatar>
                   <CardTitle className="text-4xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
-                    Ashwin Kirubakaran
+                    Owais naeem
                   </CardTitle>
                   <p className="text-xl text-gray-300 mt-2">Founder & Developer</p>
                 </CardHeader>
                 <CardContent className="mt-6 text-lg text-gray-300 space-y-6 text-center">
                   <p>
-                    Ashwin is the sole creator of NeuraLab, a hackathon project designed to explore the intersection of web technology and neurological health screening. 
+                    Owais is the sole creator of NeuraLab, a hackathon project designed to explore the intersection of web technology and neurological health screening. 
                     This project is a demonstration of how modern web APIs and machine learning can be leveraged to create accessible, privacy-focused health tools.
                   </p>
                   <div className="flex justify-center gap-6 mt-8">
