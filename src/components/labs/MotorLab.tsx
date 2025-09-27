@@ -70,6 +70,15 @@ export const MotorLab: React.FC = () => {
   // --- Camera init ---
   async function initCamera() {
     if (!videoRef.current) return;
+    
+    // Check if mediaDevices is available
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+      console.error("Camera API not available");
+      setPermission("denied");
+      setStatus("Camera API not available. Please use HTTPS or a modern browser.");
+      return;
+    }
+    
     try {
       setStatus("Requesting camera permission...");
       const stream = await navigator.mediaDevices.getUserMedia({ video: { width: 640, height: 480 } });
@@ -85,7 +94,21 @@ export const MotorLab: React.FC = () => {
     } catch (err) {
       console.error("Camera error:", err);
       setPermission("denied");
-      setStatus("Camera permission denied.");
+      
+      // Provide more specific error messages
+      if (err instanceof Error) {
+        if (err.name === 'NotAllowedError') {
+          setStatus("Camera permission denied. Please allow camera access and try again.");
+        } else if (err.name === 'NotFoundError') {
+          setStatus("No camera found. Please connect a camera and try again.");
+        } else if (err.name === 'NotSupportedError') {
+          setStatus("Camera not supported. Please use HTTPS or a modern browser.");
+        } else {
+          setStatus(`Camera error: ${err.message}`);
+        }
+      } else {
+        setStatus("Camera access failed. Please check permissions and try again.");
+      }
     }
   }
 

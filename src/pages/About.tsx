@@ -54,8 +54,8 @@ const About: React.FC = () => {
               About <span className="bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">NeuroScan</span>
             </h1>
             <p className="text-xl text-gray-300 max-w-3xl mx-auto leading-relaxed">
-              We're a team of neuroscientists, engineers, and healthcare professionals dedicated to revolutionizing 
-              neurological screening through advanced AI technologies and compassionate innovation.
+              We're a team of students deep diving into neuro fields and healthcare, using AI technologies to revolutionize 
+              neurological screening through innovative solutions and compassionate care.
             </p>
           </div>
 
@@ -155,38 +155,73 @@ const About: React.FC = () => {
             </Card>
           </div>
 
-          {/* Founder Section */}
+          {/* Team Section */}
           <div className="mt-32">
-            <div className="max-w-4xl mx-auto">
-              <Card className="glass-card">
-                <CardHeader className="text-center">
-                  <Avatar className="w-32 h-32 mx-auto mb-6 border-4 border-purple-400/50">
-                    <AvatarImage src="https://github.com/shadcn.png" alt="Owais naeem" />
-                    <AvatarFallback>ON</AvatarFallback>
-                  </Avatar>
-                  <CardTitle className="text-4xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
-                    Owais naeem
-                  </CardTitle>
-                  <p className="text-xl text-gray-300 mt-2">Founder & Developer</p>
-                </CardHeader>
-                <CardContent className="mt-6 text-lg text-gray-300 space-y-6 text-center">
-                  <p>
-                    Owais is the sole creator of NeuroScan, a hackathon project designed to explore the intersection of web technology and neurological health screening. 
-                    This project is a demonstration of how modern web APIs and machine learning can be leveraged to create accessible, privacy-focused health tools.
-                  </p>
-                  <div className="flex justify-center gap-6 mt-8">
-                    <a href="https://github.com" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-white transition-colors">
-                      <Github className="w-8 h-8" />
-                    </a>
-                    <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-white transition-colors">
-                      <Linkedin className="w-8 h-8" />
-                    </a>
-                    <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-white transition-colors">
-                      <Twitter className="w-8 h-8" />
-                    </a>
-                  </div>
-                </CardContent>
-              </Card>
+            <div className="max-w-6xl mx-auto">
+              <h2 className="text-3xl font-bold text-white mb-12 text-center">Our Team</h2>
+              <div className="grid md:grid-cols-2 gap-8">
+                {/* Owais naeem */}
+                <Card className="glass-card">
+                  <CardHeader className="text-center">
+                    <Avatar className="w-32 h-32 mx-auto mb-6 border-4 border-purple-400/50">
+                      <AvatarImage src="https://github.com/shadcn.png" alt="Owais naeem" />
+                      <AvatarFallback>ON</AvatarFallback>
+                    </Avatar>
+                    <CardTitle className="text-3xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
+                      Owais naeem
+                    </CardTitle>
+                    <p className="text-xl text-gray-300 mt-2">Founder & Developer</p>
+                  </CardHeader>
+                  <CardContent className="mt-6 text-lg text-gray-300 space-y-6 text-center">
+                    <p>
+                      Owais is the co-creator of NeuroScan, focusing on the intersection of web technology and neurological health screening. 
+                      He specializes in AI integration and backend development for this innovative healthcare platform.
+                    </p>
+                    <div className="flex justify-center gap-6 mt-8">
+                      <a href="https://github.com" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-white transition-colors">
+                        <Github className="w-8 h-8" />
+                      </a>
+                      <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-white transition-colors">
+                        <Linkedin className="w-8 h-8" />
+                      </a>
+                      <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-white transition-colors">
+                        <Twitter className="w-8 h-8" />
+                      </a>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Himanshu Rathore */}
+                <Card className="glass-card">
+                  <CardHeader className="text-center">
+                    <Avatar className="w-32 h-32 mx-auto mb-6 border-4 border-pink-400/50">
+                      <AvatarImage src="https://github.com/shadcn.png" alt="Himanshu Rathore" />
+                      <AvatarFallback>HR</AvatarFallback>
+                    </Avatar>
+                    <CardTitle className="text-3xl font-bold bg-gradient-to-r from-pink-400 to-purple-400 bg-clip-text text-transparent">
+                      Himanshu Rathore
+                    </CardTitle>
+                    <p className="text-xl text-gray-300 mt-2">Frontend Developer</p>
+                  </CardHeader>
+                  <CardContent className="mt-6 text-lg text-gray-300 space-y-6 text-center">
+                    <p>
+                      Himanshu is the co-creator of NeuroScan, specializing in frontend development and user experience design. 
+                      He crafts intuitive interfaces that make advanced neurological screening accessible to everyone.
+                    </p>
+                    <div className="flex justify-center gap-6 mt-8">
+                      <a href="https://github.com" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-white transition-colors">
+                        <Github className="w-8 h-8" />
+                      </a>
+                      <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-white transition-colors">
+                        <Linkedin className="w-8 h-8" />
+                      </a>
+                      <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-white transition-colors">
+                        <Twitter className="w-8 h-8" />
+                      </a>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
             </div>
           </div>
         </div>

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { Brain, MessageCircle, HelpCircle, Settings, Menu, X, Home } from 'lucide-react';
+import { Brain, MessageCircle, HelpCircle, Settings, Menu, X, Home, Cpu } from 'lucide-react';
 import { ChatBot } from './ChatBot';
 import { FAQModal } from './FAQModal';
 import { SettingsModal } from './SettingsModal';
@@ -20,6 +20,7 @@ export const GlassNavbar: React.FC<GlassNavbarProps> = ({ showBack, onBackClick 
   const navItems = [
     { label: 'Purpose', href: '/purpose' },
     { label: 'About', href: '/about' },
+    { label: 'Hardware', href: '/hardware-integration', icon: Cpu },
   ];
 
   return (
@@ -48,8 +49,9 @@ export const GlassNavbar: React.FC<GlassNavbarProps> = ({ showBack, onBackClick 
                 <Link
                   key={item.label}
                   to={item.href}
-                  className="text-gray-300 hover:text-white transition-colors duration-300 font-medium relative group"
+                  className="text-gray-300 hover:text-white transition-colors duration-300 font-medium relative group flex items-center gap-1"
                 >
+                  {item.icon && <item.icon className="w-4 h-4" />}
                   <span>{item.label}</span>
                   <span className="absolute bottom-0 left-0 w-full h-0.5 bg-purple-400 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 ease-out"></span>
                 </Link>
@@ -113,9 +115,10 @@ export const GlassNavbar: React.FC<GlassNavbarProps> = ({ showBack, onBackClick 
                   <Link
                     key={item.label}
                     to={item.href}
-                    className="text-gray-300 hover:text-white transition-colors duration-300 font-medium py-2"
+                    className="text-gray-300 hover:text-white transition-colors duration-300 font-medium py-2 flex items-center gap-2"
                     onClick={() => setIsMobileMenuOpen(false)}
                   >
+                    {item.icon && <item.icon className="w-4 h-4" />}
                     {item.label}
                   </Link>
                 ))}
