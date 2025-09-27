@@ -21,7 +21,7 @@ export const ChatBot: React.FC<ChatBotProps> = ({ isOpen, onClose }) => {
   const [messages, setMessages] = useState<Message[]>([
     {
       id: '1',
-      content: 'Hello! I\'m your NeuraLab assistant. I can help you understand the lab tests, interpret results, and answer questions about neurological screening. How can I assist you today?',
+      content: 'Hello! I\'m your NeuroScan assistant. I can help you understand the lab tests, interpret results, and answer questions about neurological screening. How can I assist you today?',
       sender: 'bot',
       timestamp: new Date()
     }
@@ -64,7 +64,7 @@ export const ChatBot: React.FC<ChatBotProps> = ({ isOpen, onClose }) => {
         body: JSON.stringify({
           contents: [{
             parts: [{
-              text: `You are a helpful assistant for NeuraLab, a neurological screening platform. The user asked: "${inputValue}". Please provide a helpful, accurate response about neurological screening, voice analysis, motor function tests, or eye/cognitive assessments. Keep responses concise but informative.`
+              text: `You are a helpful assistant for NeuroScan, a neurological screening platform. The user asked: "${inputValue}". Please provide a helpful, accurate response about neurological screening, voice analysis, motor function tests, or eye/cognitive assessments. Keep responses concise but informative.`
             }]
           }]
         })
@@ -110,7 +110,7 @@ export const ChatBot: React.FC<ChatBotProps> = ({ isOpen, onClose }) => {
         <CardHeader className="flex flex-row items-center justify-between pb-4">
           <CardTitle className="flex items-center gap-2 text-white">
             <Bot className="w-6 h-6 text-purple-400" />
-            NeuraLab Assistant
+            NeuroScan Assistant
           </CardTitle>
           <Button
             variant="ghost"

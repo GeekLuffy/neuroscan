@@ -77,7 +77,7 @@ const Index = () => {
                 <div className="flex items-center justify-center gap-3 mb-6">
                   <Brain className="w-12 h-12 text-purple-400" />
                   <h1 className="text-5xl md:text-6xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
-                    NeuraLab
+                    NeuroScan
                   </h1>
                 </div>
                 <p className="text-xl md:text-2xl text-gray-300 max-w-4xl mx-auto leading-relaxed">

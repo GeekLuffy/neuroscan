@@ -31,7 +31,7 @@ export const GlassNavbar: React.FC<GlassNavbarProps> = ({ showBack, onBackClick 
             <Link to="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
               <Brain className="w-8 h-8 text-purple-400" />
               <span className="text-xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
-                NeuraLab
+                NeuroScan
               </span>
             </Link>
 

@@ -5,7 +5,7 @@ import { HAND_CONNECTIONS } from "@mediapipe/hands";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
-import { Camera as CameraIcon, Play } from "lucide-react";
+import { Camera as CameraIcon, Play, Brain, Lightbulb, FileText } from "lucide-react";
 
 const WASM_PATH = "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.3/wasm";
 const MODEL_PATH = "/models/hand_landmarker.task";
@@ -15,7 +15,7 @@ let globalLastVideoTime = -1;
 
 type TremorSample = { t: number; y: number };
 
-export const MotorLabWithReport_Fixed: React.FC = () => {
+export const MotorLab: React.FC = () => {
   const [isRecording, setIsRecording] = useState(false);
   const [permission, setPermission] = useState<"idle" | "granted" | "denied">("idle");
   const [testDuration, setTestDuration] = useState(0);
@@ -271,6 +271,112 @@ function predictWebcam() {
   const movementQuality = computeMovementQuality(coordinationScore, tremorMetrics.ampNorm);
   const tapRate = testDuration>0 ? fingerTaps/testDuration : 0;
 
+  // Enhanced analysis functions
+  function getRiskLevel(score: number, type: 'coordination' | 'tremor' | 'speed'): { level: string; color: string; description: string } {
+    if (type === 'coordination') {
+      if (score >= 80) return { level: 'Excellent', color: 'text-green-400', description: 'Very good motor coordination' };
+      if (score >= 60) return { level: 'Good', color: 'text-blue-400', description: 'Normal coordination patterns' };
+      if (score >= 40) return { level: 'Fair', color: 'text-yellow-400', description: 'Mild coordination irregularities' };
+      return { level: 'Poor', color: 'text-red-400', description: 'Significant coordination issues detected' };
+    }
+    if (type === 'tremor') {
+      if (tremorMetrics.freqHz === 0) return { level: 'None', color: 'text-green-400', description: 'No significant tremor detected' };
+      if (tremorMetrics.freqHz < 4) return { level: 'Low', color: 'text-blue-400', description: 'Minimal tremor activity' };
+      if (tremorMetrics.freqHz < 8) return { level: 'Moderate', color: 'text-yellow-400', description: 'Moderate tremor detected' };
+      return { level: 'High', color: 'text-red-400', description: 'Significant tremor activity' };
+    }
+    if (type === 'speed') {
+      if (tapRate >= 8) return { level: 'Fast', color: 'text-green-400', description: 'Excellent movement speed' };
+      if (tapRate >= 5) return { level: 'Normal', color: 'text-blue-400', description: 'Normal movement speed' };
+      if (tapRate >= 3) return { level: 'Slow', color: 'text-yellow-400', description: 'Reduced movement speed' };
+      return { level: 'Very Slow', color: 'text-red-400', description: 'Significantly reduced movement speed' };
+    }
+    return { level: 'Unknown', color: 'text-gray-400', description: 'Unable to assess' };
+  }
+
+  function generateRecommendations(): string[] {
+    const recommendations: string[] = [];
+    
+    if (coordinationScore < 60) {
+      recommendations.push("Consider coordination exercises like finger-to-nose movements");
+      recommendations.push("Practice fine motor tasks such as writing or drawing");
+    }
+    
+    if (tremorMetrics.freqHz > 6) {
+      recommendations.push("Monitor tremor patterns over time for changes");
+      recommendations.push("Consider consultation with a neurologist");
+      recommendations.push("Avoid caffeine before assessments as it may increase tremor");
+    }
+    
+    if (tapRate < 4) {
+      recommendations.push("Practice rapid alternating movements to improve speed");
+      recommendations.push("Consider occupational therapy evaluation");
+    }
+    
+    if (movementQuality < 70) {
+      recommendations.push("Regular exercise may help improve overall motor function");
+      recommendations.push("Consider tracking improvements over multiple sessions");
+    }
+    
+    if (recommendations.length === 0) {
+      recommendations.push("Excellent motor function - maintain current activity level");
+      recommendations.push("Consider periodic re-assessment to monitor any changes");
+    }
+    
+    return recommendations;
+  }
+
+  function getClinicalInsights(): { category: string; findings: string[]; significance: string }[] {
+    const insights = [];
+    
+    // Coordination Analysis
+    insights.push({
+      category: "Motor Coordination",
+      findings: [
+        `Coordination score: ${coordinationScore}%`,
+        `Tap consistency: ${tapIntervals.length > 1 ? 'Measured' : 'Insufficient data'}`,
+        `Movement pattern: ${coordinationScore >= 70 ? 'Regular' : 'Irregular'}`
+      ],
+      significance: coordinationScore >= 70 ? 
+        "Normal coordination patterns suggest intact motor control pathways." :
+        "Irregular patterns may indicate motor control difficulties requiring attention."
+    });
+
+    // Tremor Analysis
+    insights.push({
+      category: "Tremor Assessment",
+      findings: [
+        `Dominant frequency: ${tremorMetrics.freqHz.toFixed(2)} Hz`,
+        `Amplitude: ${tremorAmpPercent.toFixed(2)}%`,
+        `Tremor type: ${tremorMetrics.freqHz >= 4 && tremorMetrics.freqHz <= 12 ? 'Potential pathological' : 'Within normal range'}`
+      ],
+      significance: tremorMetrics.freqHz >= 4 && tremorMetrics.freqHz <= 12 ?
+        "Tremor frequency in 4-12 Hz range may warrant clinical evaluation." :
+        "Tremor patterns appear within normal physiological range."
+    });
+
+    // Speed Analysis
+    insights.push({
+      category: "Movement Speed",
+      findings: [
+        `Tap rate: ${tapRate.toFixed(2)} taps/second`,
+        `Total taps: ${fingerTaps} in ${testDuration.toFixed(1)}s`,
+        `Speed classification: ${getRiskLevel(0, 'speed').level}`
+      ],
+      significance: tapRate >= 5 ?
+        "Movement speed within normal range for finger tapping tasks." :
+        "Reduced movement speed may indicate bradykinesia or motor slowing."
+    });
+
+    return insights;
+  }
+
+  const coordinationRisk = getRiskLevel(coordinationScore, 'coordination');
+  const tremorRisk = getRiskLevel(0, 'tremor');
+  const speedRisk = getRiskLevel(0, 'speed');
+  const recommendations = generateRecommendations();
+  const clinicalInsights = getClinicalInsights();
+
   return (
     <div className="space-y-8 pt-24">
       {/* Header */}
@@ -312,48 +418,192 @@ function predictWebcam() {
           </CardContent>
         </Card>
 
-        {/* Metrics & Report */}
+        {/* Enhanced Analysis & Report */}
         <Card>
-          <CardHeader><CardTitle>Analysis & Report</CardTitle><CardDescription>Metrics & tremor</CardDescription></CardHeader>
+          <CardHeader><CardTitle>Analysis & Report</CardTitle><CardDescription>Comprehensive motor assessment</CardDescription></CardHeader>
           <CardContent>
-            <div className="grid grid-cols-2 gap-4">
+            {/* Quick Metrics */}
+            <div className="grid grid-cols-2 gap-4 mb-6">
               <div className="text-center p-4 rounded-lg bg-muted/50">
-                <div>Tap Count</div>
-                <div className="text-xl font-bold">{fingerTaps}</div>
-                <div className="text-xs text-muted-foreground">{tapRate.toFixed(2)} taps/sec</div>
+                <div className="text-sm text-muted-foreground">Tap Count</div>
+                <div className="text-2xl font-bold">{fingerTaps}</div>
+                <div className={`text-sm ${speedRisk.color}`}>{speedRisk.level}</div>
               </div>
               <div className="text-center p-4 rounded-lg bg-muted/50">
-                <div>Tremor (Hz)</div>
-                <div className="text-xl font-bold">{tremorMetrics.freqHz>0?tremorMetrics.freqHz.toFixed(2):"—"}</div>
-                <div className="text-xs text-muted-foreground">{tremorAmpPercent.toFixed(3)}% amp</div>
+                <div className="text-sm text-muted-foreground">Tremor (Hz)</div>
+                <div className="text-2xl font-bold">{tremorMetrics.freqHz>0?tremorMetrics.freqHz.toFixed(2):"—"}</div>
+                <div className={`text-sm ${tremorRisk.color}`}>{tremorRisk.level}</div>
               </div>
               <div className="text-center p-4 rounded-lg bg-muted/50">
-                <div>Coordination</div>
-                <div className="text-xl font-bold">{coordinationScore}%</div>
+                <div className="text-sm text-muted-foreground">Coordination</div>
+                <div className="text-2xl font-bold">{coordinationScore}%</div>
+                <div className={`text-sm ${coordinationRisk.color}`}>{coordinationRisk.level}</div>
               </div>
               <div className="text-center p-4 rounded-lg bg-muted/50">
-                <div>Movement Quality</div>
-                <div className="text-xl font-bold">{movementQuality}</div>
+                <div className="text-sm text-muted-foreground">Overall Quality</div>
+                <div className="text-2xl font-bold">{movementQuality}</div>
+                <div className="text-sm text-muted-foreground">Combined Score</div>
               </div>
             </div>
 
-            {/* Report */}
-            <div className="mt-4 p-4 border rounded-lg bg-muted/10 text-sm space-y-2">
-              <div><strong>Test Duration:</strong> {testDuration.toFixed(1)} s</div>
-              <div><strong>Total Taps:</strong> {fingerTaps}</div>
-              <div><strong>Average Tap Rate:</strong> {tapRate.toFixed(2)} taps/sec</div>
-              <div><strong>Tremor Amplitude:</strong> {tremorAmpPercent.toFixed(3)}%</div>
-              <div><strong>Tremor Frequency:</strong> {tremorMetrics.freqHz.toFixed(2)} Hz</div>
-              <div><strong>Coordination Score:</strong> {coordinationScore}%</div>
-              <div><strong>Movement Quality:</strong> {movementQuality}%</div>
+            {/* Overall Quality Progress */}
+            <div className="mb-6">
+              <div className="flex justify-between items-center mb-2">
+                <span className="text-sm font-medium">Movement Quality Score</span>
+                <span className="text-sm text-muted-foreground">{movementQuality}%</span>
+              </div>
+              <Progress value={movementQuality} className="h-3" />
             </div>
-
-            <div className="mt-4"><Progress value={movementQuality} className="h-3" /></div>
           </CardContent>
         </Card>
       </div>
+
+      {/* Clinical Insights Section */}
+      <div className="grid lg:grid-cols-2 gap-6">
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Brain className="w-5 h-5 text-purple-400" />
+              Clinical Insights
+            </CardTitle>
+            <CardDescription>Detailed analysis of motor function patterns</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            {clinicalInsights.map((insight, index) => (
+              <div key={index} className="p-4 border rounded-lg bg-muted/5">
+                <h4 className="font-semibold text-white mb-2">{insight.category}</h4>
+                <ul className="text-sm text-gray-300 space-y-1 mb-3">
+                  {insight.findings.map((finding, i) => (
+                    <li key={i}>• {finding}</li>
+                  ))}
+                </ul>
+                <p className="text-xs text-gray-400 italic">{insight.significance}</p>
+              </div>
+            ))}
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Lightbulb className="w-5 h-5 text-yellow-400" />
+              Recommendations
+            </CardTitle>
+            <CardDescription>Personalized suggestions for improvement</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-3">
+              {recommendations.map((rec, index) => (
+                <div key={index} className="flex items-start gap-3 p-3 rounded-lg bg-muted/5">
+                  <div className="w-2 h-2 rounded-full bg-purple-400 mt-2 flex-shrink-0"></div>
+                  <p className="text-sm text-gray-300">{rec}</p>
+                </div>
+              ))}
+            </div>
+            
+            {/* Risk Assessment Summary */}
+            <div className="mt-6 p-4 border rounded-lg bg-gradient-to-r from-purple-500/10 to-pink-500/10">
+              <h4 className="font-semibold text-white mb-3">Assessment Summary</h4>
+              <div className="grid grid-cols-1 gap-2 text-sm">
+                <div className="flex justify-between">
+                  <span>Coordination:</span>
+                  <span className={coordinationRisk.color}>{coordinationRisk.description}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span>Tremor Status:</span>
+                  <span className={tremorRisk.color}>{tremorRisk.description}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span>Movement Speed:</span>
+                  <span className={speedRisk.color}>{speedRisk.description}</span>
+                </div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Detailed Report Section */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <FileText className="w-5 h-5 text-blue-400" />
+            Detailed Report
+          </CardTitle>
+          <CardDescription>Complete test results and measurements</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="grid md:grid-cols-2 gap-6">
+            <div className="space-y-3">
+              <h4 className="font-semibold text-white">Test Parameters</h4>
+              <div className="space-y-2 text-sm">
+                <div className="flex justify-between">
+                  <span className="text-gray-400">Test Duration:</span>
+                  <span className="text-white">{testDuration.toFixed(1)} seconds</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-400">Total Finger Taps:</span>
+                  <span className="text-white">{fingerTaps}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-400">Average Tap Rate:</span>
+                  <span className="text-white">{tapRate.toFixed(2)} taps/sec</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-400">Tap Intervals Recorded:</span>
+                  <span className="text-white">{tapIntervals.length}</span>
+                </div>
+              </div>
+            </div>
+            
+            <div className="space-y-3">
+              <h4 className="font-semibold text-white">Motion Analysis</h4>
+              <div className="space-y-2 text-sm">
+                <div className="flex justify-between">
+                  <span className="text-gray-400">Tremor Frequency:</span>
+                  <span className="text-white">{tremorMetrics.freqHz.toFixed(2)} Hz</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-400">Tremor Amplitude:</span>
+                  <span className="text-white">{tremorAmpPercent.toFixed(3)}%</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-400">Coordination Score:</span>
+                  <span className="text-white">{coordinationScore}%</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-400">Movement Quality:</span>
+                  <span className="text-white">{movementQuality}%</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          {/* Clinical Reference Ranges */}
+          <div className="mt-6 p-4 border rounded-lg bg-muted/5">
+            <h4 className="font-semibold text-white mb-3">Clinical Reference Ranges</h4>
+            <div className="grid md:grid-cols-3 gap-4 text-xs">
+              <div>
+                <div className="font-medium text-gray-300">Finger Tapping Rate</div>
+                <div className="text-gray-400">Normal: 5-10 taps/sec</div>
+                <div className="text-gray-400">Reduced: &lt;5 taps/sec</div>
+              </div>
+              <div>
+                <div className="font-medium text-gray-300">Coordination Score</div>
+                <div className="text-gray-400">Excellent: 80-100%</div>
+                <div className="text-gray-400">Concerning: &lt;60%</div>
+              </div>
+              <div>
+                <div className="font-medium text-gray-300">Tremor Frequency</div>
+                <div className="text-gray-400">Physiological: 0-3 Hz</div>
+                <div className="text-gray-400">Pathological: 4-12 Hz</div>
+              </div>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
     </div>
   );
 };
 
-export default MotorLabWithReport_Fixed;
+export default MotorLab;

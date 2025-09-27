@@ -51,7 +51,7 @@ const About: React.FC = () => {
           {/* Header */}
           <div className="text-center mb-16">
             <h1 className="text-4xl md:text-6xl font-bold mb-6">
-              About <span className="bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">NeuraLab</span>
+              About <span className="bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">NeuroScan</span>
             </h1>
             <p className="text-xl text-gray-300 max-w-3xl mx-auto leading-relaxed">
               We're a team of neuroscientists, engineers, and healthcare professionals dedicated to revolutionizing 
@@ -171,7 +171,7 @@ const About: React.FC = () => {
                 </CardHeader>
                 <CardContent className="mt-6 text-lg text-gray-300 space-y-6 text-center">
                   <p>
-                    Owais is the sole creator of NeuraLab, a hackathon project designed to explore the intersection of web technology and neurological health screening. 
+                    Owais is the sole creator of NeuroScan, a hackathon project designed to explore the intersection of web technology and neurological health screening. 
                     This project is a demonstration of how modern web APIs and machine learning can be leveraged to create accessible, privacy-focused health tools.
                   </p>
                   <div className="flex justify-center gap-6 mt-8">

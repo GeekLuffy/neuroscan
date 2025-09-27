@@ -114,7 +114,7 @@ interface ParticleTextEffectProps {
   words?: string[]
 }
 
-const DEFAULT_WORDS = ["Welcome", "to", "NeuraLab"]
+const DEFAULT_WORDS = ["Welcome", "to", "NeuroScan"]
 
 export function ParticleTextEffect({ words = DEFAULT_WORDS }: ParticleTextEffectProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null)

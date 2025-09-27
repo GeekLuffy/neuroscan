@@ -15,7 +15,7 @@ const Purpose = () => {
             <CardHeader className="text-center pb-8">
               <Lightbulb className="w-16 h-16 mx-auto mb-6 text-purple-400" />
               <CardTitle className="text-4xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
-                The Purpose of NeuraLab
+                The Purpose of NeuroScan
               </CardTitle>
               <p className="text-xl text-gray-300 mt-4">
                 Exploring the Future of Accessible Neurological Screening
@@ -23,7 +23,7 @@ const Purpose = () => {
             </CardHeader>
             <CardContent className="text-lg text-gray-300 space-y-6">
               <p>
-                NeuraLab was born from a simple yet powerful idea: what if we could leverage the technology already in our hands—our computers and smartphones—to create accessible, preliminary tools for neurological health screening? This project is a hackathon-born exploration into that very question.
+                NeuroScan was born from a simple yet powerful idea: what if we could leverage the technology already in our hands—our computers and smartphones—to create accessible, preliminary tools for neurological health screening? This project is a hackathon-born exploration into that very question.
               </p>
               <p>
                 The core mission is to demonstrate the potential of web-based technologies to provide valuable health insights. By using on-device machine learning, we can analyze motor skills, vocal patterns, and cognitive functions in a way that is both innovative and respects user privacy.

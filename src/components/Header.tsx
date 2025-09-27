@@ -27,7 +27,7 @@ export const Header: React.FC<HeaderProps> = ({ showBack, onBackClick }) => {
               <Brain className="w-6 h-6 text-purple-400" />
               <div>
                 <h1 className="text-lg font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
-                  NeuraLab
+                  NeuroScan
                 </h1>
                 <p className="text-xs text-gray-400 hidden sm:block">
                   Privacy-first neurological screening
