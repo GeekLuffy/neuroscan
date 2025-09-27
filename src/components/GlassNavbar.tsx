@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { Brain, MessageCircle, HelpCircle, Settings, Menu, X, Home, Cpu, Palette } from 'lucide-react';
+import { Brain, MessageCircle, HelpCircle, Settings, Menu, X, Home, Cpu, Palette, Smartphone, Target, Info } from 'lucide-react';
 import { ChatBot } from './ChatBot';
 import { FAQModal } from './FAQModal';
 import { SettingsModal } from './SettingsModal';
@@ -22,9 +22,10 @@ export const GlassNavbar: React.FC<GlassNavbarProps> = ({ showBack, onBackClick 
   const { colors } = useTheme();
 
   const navItems = [
-    { label: 'Purpose', href: '/purpose' },
-    { label: 'About', href: '/about' },
+    { label: 'Purpose', href: '/purpose', icon: Target },
     { label: 'Hardware', href: '/hardware-integration', icon: Cpu },
+    { label: 'Device', href: '/device-model', icon: Smartphone },
+    { label: 'About', href: '/about', icon: Info },
   ];
 
   return (
@@ -44,8 +45,9 @@ export const GlassNavbar: React.FC<GlassNavbarProps> = ({ showBack, onBackClick 
             <div className="hidden md:flex items-center gap-8">
               <Link
                 to="/"
-                className="text-gray-300 hover:text-white transition-colors duration-300 font-medium relative group"
+                className="text-gray-300 hover:text-white transition-colors duration-300 font-medium relative group flex items-center gap-1"
               >
+                <Home className="w-4 h-4" />
                 <span>Home</span>
                 <span className="absolute bottom-0 left-0 w-full h-0.5 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 ease-out" style={{ backgroundColor: colors.primary }}></span>
               </Link>

@@ -97,6 +97,8 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
   const setTheme = (theme: ThemeType) => {
     setCurrentTheme(theme);
     localStorage.setItem('neuroscan-theme', theme);
+    // Refresh the page to apply theme changes
+    window.location.reload();
   };
 
   const colors = themes[currentTheme];

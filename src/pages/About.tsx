@@ -4,7 +4,7 @@ import { PaperShaderBackground } from '@/components/PaperShaderBackground';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Linkedin, Github, Twitter } from 'lucide-react';
-import { Brain, Heart, Users, Award, Lightbulb, Shield } from 'lucide-react';
+import { Brain, Heart, Users, Award, Lightbulb, Shield, Cpu, Smartphone, Zap, Target, Activity, Stethoscope } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { useTheme } from '@/contexts/ThemeContext';  
 
@@ -13,34 +13,34 @@ const About: React.FC = () => {
   
   const values = [
     {
-      icon: Brain,
-      title: "Innovation",
-      description: "Pushing the boundaries of neurological screening through cutting-edge AI and machine learning technologies."
+      icon: Smartphone,
+      title: "Hardware Innovation",
+      description: "Developing professional-grade medical sensors integrated with Raspberry Pi Zero processing for comprehensive neurological monitoring."
     },
     {
-      icon: Heart,
-      title: "Compassion",
-      description: "Every line of code we write is driven by our commitment to improving patient outcomes and quality of life."
+      icon: Stethoscope,
+      title: "Medical Precision",
+      description: "Every sensor and algorithm is designed with medical accuracy in mind, targeting early detection of neurological conditions."
+    },
+    {
+      icon: Activity,
+      title: "Comprehensive Monitoring",
+      description: "Six medical-grade sensors working in harmony - ECG, EMG, motion tracking, temperature, pulse oximetry, and voice analysis."
+    },
+    {
+      icon: Zap,
+      title: "Real-time Processing",
+      description: "8-10 hour battery life with continuous real-time analysis and intelligent power management for all-day monitoring."
+    },
+    {
+      icon: Target,
+      title: "Early Detection Focus",
+      description: "Specialized AI algorithms for identifying early-stage indicators of Parkinson's, Alzheimer's, and epilepsy."
     },
     {
       icon: Users,
-      title: "Collaboration",
-      description: "Working closely with healthcare professionals to create tools that truly make a difference in clinical practice."
-    },
-    {
-      icon: Award,
-      title: "Excellence",
-      description: "Maintaining the highest standards in research, development, and clinical validation of our technologies."
-    },
-    {
-      icon: Lightbulb,
-      title: "Research",
-      description: "Continuously advancing the field through rigorous scientific research and peer-reviewed publications."
-    },
-    {
-      icon: Shield,
-      title: "Trust",
-      description: "Building secure, reliable, and validated solutions that healthcare professionals can depend on."
+      title: "Primary Care Integration",
+      description: "Designed for seamless integration into primary healthcare workflows with secure data transmission and professional reporting."
     }
   ];
 
@@ -57,8 +57,9 @@ const About: React.FC = () => {
               About <span className={`bg-gradient-to-r ${colors.textGradient} bg-clip-text text-transparent`}>NeuroScan</span>
             </h1>
             <p className="text-xl text-gray-300 max-w-3xl mx-auto leading-relaxed">
-              We're a team of students deep diving into neuro fields and healthcare, using AI technologies to revolutionize 
-              neurological screening through innovative solutions and compassionate care.
+              We're pioneering the future of neurological healthcare by developing the <strong className="text-white">NeuraScreen device</strong> - 
+              a comprehensive medical-grade hardware platform that combines advanced AI with professional sensor technology 
+              for early detection and monitoring of neurological conditions.
             </p>
           </div>
 
@@ -68,10 +69,10 @@ const About: React.FC = () => {
               <CardContent className="p-8">
                 <h2 className="text-3xl font-bold text-white mb-6 text-center">Our Mission</h2>
                 <p className="text-lg text-gray-300 leading-relaxed text-center max-w-4xl mx-auto">
-                  To democratize access to advanced neurological screening by developing AI-powered tools that enable 
-                  early detection, accurate diagnosis, and personalized treatment pathways. We believe that every 
-                  individual deserves access to cutting-edge healthcare technology, regardless of their location or 
-                  economic circumstances.
+                  To revolutionize neurological healthcare by developing the <strong className="text-white">NeuraScreen device</strong> - 
+                  a professional-grade, wearable diagnostic platform that bridges the gap between accessible healthcare and medical precision. 
+                  Our comprehensive sensor array and AI-powered analysis enable early detection of Parkinson's disease, Alzheimer's disease, 
+                  and epilepsy in primary care settings, making advanced neurological screening universally accessible.
                 </p>
               </CardContent>
             </Card>
@@ -109,61 +110,7 @@ const About: React.FC = () => {
             </div>
           </div>
 
-          {/* Company Stats */}
-          <div className="mb-16">
-            <Card className="glass-card">
-              <CardContent className="p-8">
-                <h2 className="text-3xl font-bold text-white mb-12 text-center">Impact & Achievements</h2>
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-8 text-center">
-                  <div>
-                    <div className="text-4xl font-bold text-purple-400 mb-2">??</div>
-                    <div className="text-gray-300">Screenings Conducted</div>
-                  </div>
-                  <div>
-                    <div className="text-4xl font-bold text-pink-400 mb-2">95%</div>
-                    <div className="text-gray-300">Accuracy Rate</div>
-                  </div>
-                  <div>
-                    <div className="text-4xl font-bold text-blue-400 mb-2">??</div>
-                    <div className="text-gray-300">Healthcare Partners</div>
-                  </div>
-                  <div>
-                    <div className="text-4xl font-bold text-green-400 mb-2">??</div>
-                    <div className="text-gray-300">Research Publications</div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
 
-          {/* Call to Action */}
-          <div className="text-center">
-            <Card className="glass-card max-w-2xl mx-auto">
-              <CardContent className="p-8">
-                <h3 className="text-2xl font-bold text-white mb-4">
-                  Join Our Mission
-                </h3>
-                <p className="text-gray-300 mb-6">
-                  Whether you're a healthcare professional, researcher, or technology partner, 
-                  we invite you to join us in advancing neurological healthcare through innovation.
-                </p>
-                <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                  <a 
-                    href="/contact" 
-                    className="px-6 py-3 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-lg font-semibold hover:from-purple-700 hover:to-pink-700 transition-all duration-300 text-center"
-                  >
-                    Partner With Us
-                  </a>
-                  <a 
-                    href="/work" 
-                    className="px-6 py-3 border border-purple-500/50 text-purple-300 rounded-lg font-semibold hover:bg-purple-500/10 transition-all duration-300 text-center"
-                  >
-                    View Our Work
-                  </a>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
 
           {/* Team Section */}
           <div className="mt-32">
@@ -178,14 +125,15 @@ const About: React.FC = () => {
                       <AvatarFallback>ON</AvatarFallback>
                     </Avatar>
                     <CardTitle className={`text-3xl font-bold bg-gradient-to-r ${colors.textGradient} bg-clip-text text-transparent`}>
-                      Owais naeem
+                      Owais Naeem
                     </CardTitle>
-                    <p className="text-xl text-gray-300 mt-2">Founder & Developer</p>
+                    <p className="text-xl text-gray-300 mt-2">Hardware Integration & AI Developer</p>
                   </CardHeader>
                   <CardContent className="mt-6 text-lg text-gray-300 space-y-6 text-center">
                     <p>
-                      Owais is the co-creator of NeuroScan, focusing on the intersection of web technology and neurological health screening. 
-                      He specializes in AI integration and backend development for this innovative healthcare platform.
+                      Owais is the co-creator of NeuroScan, leading the backend development and AI integration for the NeuraScreen platform. 
+                      He specializes in machine learning algorithms for neurological analysis, backend API development, medical sensor data processing, 
+                      and seamless integration between hardware components and AI systems.
                     </p>
                     <div className="flex justify-center gap-6 mt-8">
                       <a href="https://github.com" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-white transition-colors">
@@ -211,12 +159,13 @@ const About: React.FC = () => {
                     <CardTitle className={`text-3xl font-bold bg-gradient-to-r ${colors.textGradient} bg-clip-text text-transparent`}>
                       Himanshu Rathore
                     </CardTitle>
-                    <p className="text-xl text-gray-300 mt-2">Frontend Developer</p>
+                    <p className="text-xl text-gray-300 mt-2">Frontend, UX & IoT Developer</p>
                   </CardHeader>
                   <CardContent className="mt-6 text-lg text-gray-300 space-y-6 text-center">
                     <p>
-                      Himanshu is the co-creator of NeuroScan, specializing in frontend development and user experience design. 
-                      He crafts intuitive interfaces that make advanced neurological screening accessible to everyone.
+                      Himanshu is the co-creator of NeuroScan, leading frontend development and IoT integration for the NeuraScreen platform. 
+                      He specializes in creating intuitive user interfaces, medical data visualization, IoT device communication protocols, 
+                      and seamless connectivity between the NeuraScreen hardware and web platform for real-time monitoring.
                     </p>
                     <div className="flex justify-center gap-6 mt-8">
                       <a href="https://github.com" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-white transition-colors">

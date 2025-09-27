@@ -12,6 +12,7 @@ import { EyeLab } from "./components/labs/EyeLab";
 import Purpose from "./pages/Purpose";
 import About from "./pages/About";
 import HardwareIntegration from "./pages/HardwareIntegration";
+import DeviceModel from "./pages/DeviceModel";
 import NotFound from "./pages/NotFound";
 const queryClient = new QueryClient();
 
@@ -29,6 +30,7 @@ const AppContent = () => {
         <Route path="/purpose" element={<Purpose />} />
         <Route path="/about" element={<About />} />
         <Route path="/hardware-integration" element={<HardwareIntegration />} />
+        <Route path="/device-model" element={<DeviceModel />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
       <Toaster />
