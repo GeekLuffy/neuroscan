@@ -164,7 +164,7 @@ const About: React.FC = () => {
                 <Card className="glass-card">
                   <CardHeader className="text-center">
                     <Avatar className="w-32 h-32 mx-auto mb-6 border-4 border-purple-400/50">
-                      <AvatarImage src="https://github.com/shadcn.png" alt="Owais naeem" />
+                      <AvatarImage src="/owais.png" alt="Owais naeem" />
                       <AvatarFallback>ON</AvatarFallback>
                     </Avatar>
                     <CardTitle className="text-3xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
@@ -195,7 +195,7 @@ const About: React.FC = () => {
                 <Card className="glass-card">
                   <CardHeader className="text-center">
                     <Avatar className="w-32 h-32 mx-auto mb-6 border-4 border-pink-400/50">
-                      <AvatarImage src="https://github.com/shadcn.png" alt="Himanshu Rathore" />
+                      <AvatarImage src="/himanshu.png" alt="Himanshu Rathore" />
                       <AvatarFallback>HR</AvatarFallback>
                     </Avatar>
                     <CardTitle className="text-3xl font-bold bg-gradient-to-r from-pink-400 to-purple-400 bg-clip-text text-transparent">
