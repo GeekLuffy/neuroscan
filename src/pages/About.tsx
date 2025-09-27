@@ -25,7 +25,7 @@ const About: React.FC = () => {
     {
       icon: Activity,
       title: "Comprehensive Monitoring",
-      description: "Six medical-grade sensors working in harmony - ECG, EMG, motion tracking, temperature, pulse oximetry, and voice analysis."
+      description: "Six medical-grade sensors working in harmony - Heart Rate Sensor, EMG, motion tracking, temperature, pulse oximetry, and voice analysis."
     },
     {
       icon: Zap,

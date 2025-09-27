@@ -40,7 +40,7 @@ const Purpose = () => {
                 <div className="flex flex-col items-center gap-2">
                   <Heart className="w-10 h-10 text-red-400" />
                   <h3 className="font-bold text-white">Medical-Grade Sensors</h3>
-                  <p className="text-sm text-gray-400">ECG, EMG, motion tracking, temperature, pulse oximetry, and voice analysis capabilities.</p>
+                  <p className="text-sm text-gray-400">Heart Rate Sensor AD8232, EMG, motion tracking, temperature, pulse oximetry, and voice analysis capabilities.</p>
                 </div>
                 <div className="flex flex-col items-center gap-2">
                   <Brain className="w-10 h-10 text-pink-400" />

@@ -26,7 +26,7 @@ const DeviceModel: React.FC = () => {
     {
       icon: Heart,
       name: "AD8232 Heart Rate Monitor",
-      description: "Single-lead ECG signal acquisition",
+      description: "Single-lead heart rate signal acquisition",
       features: [
         "Heart rate variability analysis",
         "Real-time cardiac rhythm monitoring", 

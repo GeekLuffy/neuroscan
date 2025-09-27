@@ -88,7 +88,7 @@ export const HardwareDataDisplay: React.FC = () => {
     const interval = setInterval(() => {
       const now = Date.now();
       
-      // Simulate ECG data (heart rate pattern)
+      // Simulate Heart Rate Sensor AD8232 data (heart rate pattern)
       const ecgValue = Math.sin(now / 100) * 50 + Math.random() * 10 + 60;
       setEcgData(prev => [...prev.slice(-100), { timestamp: now, value: ecgValue }]);
       
@@ -127,7 +127,7 @@ export const HardwareDataDisplay: React.FC = () => {
           type: 'warning',
           message: 'High heart rate detected',
           timestamp: now,
-          sensor: 'ECG'
+          sensor: 'Heart Rate Sensor AD8232'
         };
         setAlerts(prev => [newAlert, ...prev.slice(0, 4)]);
       }
@@ -138,7 +138,7 @@ export const HardwareDataDisplay: React.FC = () => {
 
   // Draw real-time charts
   useEffect(() => {
-    drawChart(ecgCanvasRef.current, ecgData, '#8b5cf6', 'ECG');
+    drawChart(ecgCanvasRef.current, ecgData, '#8b5cf6', 'Heart Rate Sensor AD8232');
   }, [ecgData]);
 
   useEffect(() => {
@@ -257,7 +257,7 @@ export const HardwareDataDisplay: React.FC = () => {
         mimeType = 'application/json';
         break;
       case 'csv':
-        const csvHeader = 'Timestamp,ECG,EMG,AccelX,AccelY,AccelZ,Temperature\n';
+        const csvHeader = 'Timestamp,Heart_Rate_Sensor_AD8232,EMG,AccelX,AccelY,AccelZ,Temperature\n';
         const csvRows = ecgData.map((_, index) => {
           return [
             ecgData[index]?.timestamp || '',
@@ -275,7 +275,7 @@ export const HardwareDataDisplay: React.FC = () => {
         break;
       case 'pdf':
         // For PDF, we'll create a simple text representation
-        content = `NeuroScan Hardware Data Report\n\nGenerated: ${new Date().toISOString()}\n\nECG Data Points: ${ecgData.length}\nEMG Data Points: ${emgData.length}\nAccelerometer Data Points: ${accelData.x.length}\nTemperature Data Points: ${tempData.length}`;
+        content = `NeuroScan Hardware Data Report\n\nGenerated: ${new Date().toISOString()}\n\nHeart Rate Sensor AD8232 Data Points: ${ecgData.length}\nEMG Data Points: ${emgData.length}\nAccelerometer Data Points: ${accelData.x.length}\nTemperature Data Points: ${tempData.length}`;
         fileName = `neuroscan-report-${Date.now()}.txt`;
         mimeType = 'text/plain';
         break;
@@ -501,7 +501,7 @@ export const HardwareDataDisplay: React.FC = () => {
         <TabsList className="grid w-full grid-cols-4">
           <TabsTrigger value="ecg" className="flex items-center gap-2">
             <Heart className="w-4 h-4" />
-            ECG
+            Heart Rate Sensor AD8232
           </TabsTrigger>
           <TabsTrigger value="emg" className="flex items-center gap-2">
             <Zap className="w-4 h-4" />
@@ -522,7 +522,7 @@ export const HardwareDataDisplay: React.FC = () => {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Heart className="w-5 h-5 text-red-400" />
-                ECG - Electrocardiogram
+                Heart Rate Sensor AD8232 - Single-lead heart rate monitoring
                 <Badge variant="outline" className="text-xs">Demo Data</Badge>
               </CardTitle>
               <CardDescription>Simulated heart electrical activity monitoring - Device not connected</CardDescription>
