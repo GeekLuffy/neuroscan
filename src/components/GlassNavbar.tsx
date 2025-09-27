@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { Brain, MessageCircle, HelpCircle, Settings, Menu, X, Home, Cpu } from 'lucide-react';
+import { Brain, MessageCircle, HelpCircle, Settings, Menu, X, Home, Cpu, Palette } from 'lucide-react';
 import { ChatBot } from './ChatBot';
 import { FAQModal } from './FAQModal';
 import { SettingsModal } from './SettingsModal';
+import { ThemeSelector } from './ThemeSelector';
+import { useTheme } from '@/contexts/ThemeContext';
 import { Link } from 'react-router-dom';
 
 interface GlassNavbarProps {
@@ -15,7 +17,9 @@ export const GlassNavbar: React.FC<GlassNavbarProps> = ({ showBack, onBackClick 
   const [isChatOpen, setIsChatOpen] = useState(false);
   const [isFAQOpen, setIsFAQOpen] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const [isThemeSelectorOpen, setIsThemeSelectorOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const { colors } = useTheme();
 
   const navItems = [
     { label: 'Purpose', href: '/purpose' },
@@ -30,8 +34,8 @@ export const GlassNavbar: React.FC<GlassNavbarProps> = ({ showBack, onBackClick 
           <div className="flex items-center justify-between">
             {/* Logo */}
             <Link to="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
-              <Brain className="w-8 h-8 text-purple-400" />
-              <span className="text-xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
+              <Brain className="w-8 h-8" style={{ color: colors.primary }} />
+              <span className={`text-xl font-bold bg-gradient-to-r ${colors.textGradient} bg-clip-text text-transparent`}>
                 NeuroScan
               </span>
             </Link>
@@ -43,7 +47,7 @@ export const GlassNavbar: React.FC<GlassNavbarProps> = ({ showBack, onBackClick 
                 className="text-gray-300 hover:text-white transition-colors duration-300 font-medium relative group"
               >
                 <span>Home</span>
-                <span className="absolute bottom-0 left-0 w-full h-0.5 bg-purple-400 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 ease-out"></span>
+                <span className="absolute bottom-0 left-0 w-full h-0.5 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 ease-out" style={{ backgroundColor: colors.primary }}></span>
               </Link>
               {navItems.map((item) => (
                 <Link
@@ -53,7 +57,7 @@ export const GlassNavbar: React.FC<GlassNavbarProps> = ({ showBack, onBackClick 
                 >
                   {item.icon && <item.icon className="w-4 h-4" />}
                   <span>{item.label}</span>
-                  <span className="absolute bottom-0 left-0 w-full h-0.5 bg-purple-400 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 ease-out"></span>
+                  <span className="absolute bottom-0 left-0 w-full h-0.5 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 ease-out" style={{ backgroundColor: colors.primary }}></span>
                 </Link>
               ))}
             </div>
@@ -64,7 +68,8 @@ export const GlassNavbar: React.FC<GlassNavbarProps> = ({ showBack, onBackClick 
                 variant="ghost"
                 size="icon"
                 onClick={() => setIsChatOpen(true)}
-                className="glass-button text-purple-400 hover:text-purple-300"
+                className="glass-button hover:opacity-80"
+                style={{ color: colors.primary }}
               >
                 <MessageCircle className="w-5 h-5" />
               </Button>
@@ -73,16 +78,28 @@ export const GlassNavbar: React.FC<GlassNavbarProps> = ({ showBack, onBackClick 
                 variant="ghost"
                 size="icon"
                 onClick={() => setIsFAQOpen(true)}
-                className="glass-button text-purple-400 hover:text-purple-300"
+                className="glass-button hover:opacity-80"
+                style={{ color: colors.primary }}
               >
                 <HelpCircle className="w-5 h-5" />
+              </Button>
+
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => setIsThemeSelectorOpen(true)}
+                className="glass-button hover:opacity-80"
+                style={{ color: colors.primary }}
+              >
+                <Palette className="w-5 h-5" />
               </Button>
               
               <Button
                 variant="ghost"
                 size="icon"
                 onClick={() => setIsSettingsOpen(true)}
-                className="glass-button text-purple-400 hover:text-purple-300"
+                className="glass-button hover:opacity-80"
+                style={{ color: colors.primary }}
               >
                 <Settings className="w-5 h-5" />
               </Button>
@@ -92,7 +109,8 @@ export const GlassNavbar: React.FC<GlassNavbarProps> = ({ showBack, onBackClick 
                 variant="ghost"
                 size="icon"
                 onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                className="md:hidden glass-button text-purple-400 hover:text-purple-300"
+                className="md:hidden glass-button hover:opacity-80"
+                style={{ color: colors.primary }}
               >
                 {isMobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
               </Button>
@@ -132,6 +150,7 @@ export const GlassNavbar: React.FC<GlassNavbarProps> = ({ showBack, onBackClick 
       <ChatBot isOpen={isChatOpen} onClose={() => setIsChatOpen(false)} />
       <FAQModal isOpen={isFAQOpen} onClose={() => setIsFAQOpen(false)} />
       <SettingsModal isOpen={isSettingsOpen} onClose={() => setIsSettingsOpen(false)} />
+      <ThemeSelector isOpen={isThemeSelectorOpen} onClose={() => setIsThemeSelectorOpen(false)} />
     </>
   );
 };

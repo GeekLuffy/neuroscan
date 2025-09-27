@@ -5,9 +5,12 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Linkedin, Github, Twitter } from 'lucide-react';
 import { Brain, Heart, Users, Award, Lightbulb, Shield } from 'lucide-react';
-import { Badge } from '@/components/ui/badge';  
+import { Badge } from '@/components/ui/badge';
+import { useTheme } from '@/contexts/ThemeContext';  
 
 const About: React.FC = () => {
+  const { colors } = useTheme();
+  
   const values = [
     {
       icon: Brain,
@@ -51,7 +54,7 @@ const About: React.FC = () => {
           {/* Header */}
           <div className="text-center mb-16">
             <h1 className="text-4xl md:text-6xl font-bold mb-6">
-              About <span className="bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">NeuroScan</span>
+              About <span className={`bg-gradient-to-r ${colors.textGradient} bg-clip-text text-transparent`}>NeuroScan</span>
             </h1>
             <p className="text-xl text-gray-300 max-w-3xl mx-auto leading-relaxed">
               We're a team of students deep diving into neuro fields and healthcare, using AI technologies to revolutionize 
@@ -83,10 +86,17 @@ const About: React.FC = () => {
                 return (
                   <Card key={index} className="glass-card group hover:scale-105 transition-transform duration-300">
                     <CardHeader>
-                      <div className="p-3 rounded-lg bg-gradient-to-br from-purple-500/20 to-pink-500/20 border border-purple-500/30 w-fit mb-4">
-                        <IconComponent className="w-6 h-6 text-purple-400" />
-                      </div>
-                      <CardTitle className="text-xl text-white group-hover:text-purple-300 transition-colors">
+                  <div className="p-3 rounded-lg bg-gradient-to-br w-fit mb-4" style={{ 
+                    background: `linear-gradient(to bottom right, ${colors.primary}20, ${colors.secondary}20)`,
+                    border: `1px solid ${colors.primary}30`
+                  }}>
+                    <IconComponent className="w-6 h-6" style={{ color: colors.primary }} />
+                  </div>
+                      <CardTitle className="text-xl text-white transition-colors" style={{ 
+                        transition: 'color 0.3s ease'
+                      }}
+                      onMouseEnter={(e) => e.currentTarget.style.color = colors.secondary}
+                      onMouseLeave={(e) => e.currentTarget.style.color = 'white'}>
                         {value.title}
                       </CardTitle>
                       <CardDescription className="text-gray-400 leading-relaxed">
@@ -163,11 +173,11 @@ const About: React.FC = () => {
                 {/* Owais naeem */}
                 <Card className="glass-card">
                   <CardHeader className="text-center">
-                    <Avatar className="w-32 h-32 mx-auto mb-6 border-4 border-purple-400/50">
-                      <AvatarImage src="/owais.png" alt="Owais naeem" />
+                    <Avatar className="w-32 h-32 mx-auto mb-6 border-4" style={{ borderColor: `${colors.primary}50` }}>
+                      <AvatarImage src="/owais.png" alt="Owais Naeem" />
                       <AvatarFallback>ON</AvatarFallback>
                     </Avatar>
-                    <CardTitle className="text-3xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
+                    <CardTitle className={`text-3xl font-bold bg-gradient-to-r ${colors.textGradient} bg-clip-text text-transparent`}>
                       Owais naeem
                     </CardTitle>
                     <p className="text-xl text-gray-300 mt-2">Founder & Developer</p>
@@ -194,11 +204,11 @@ const About: React.FC = () => {
                 {/* Himanshu Rathore */}
                 <Card className="glass-card">
                   <CardHeader className="text-center">
-                    <Avatar className="w-32 h-32 mx-auto mb-6 border-4 border-pink-400/50">
+                    <Avatar className="w-32 h-32 mx-auto mb-6 border-4" style={{ borderColor: `${colors.secondary}50` }}>
                       <AvatarImage src="/himanshu.png" alt="Himanshu Rathore" />
                       <AvatarFallback>HR</AvatarFallback>
                     </Avatar>
-                    <CardTitle className="text-3xl font-bold bg-gradient-to-r from-pink-400 to-purple-400 bg-clip-text text-transparent">
+                    <CardTitle className={`text-3xl font-bold bg-gradient-to-r ${colors.textGradient} bg-clip-text text-transparent`}>
                       Himanshu Rathore
                     </CardTitle>
                     <p className="text-xl text-gray-300 mt-2">Frontend Developer</p>

@@ -10,6 +10,7 @@ import { EyeLab } from '@/components/labs/EyeLab';
 import { Timeline } from '@/components/Timeline';
 import { GlassNavbar } from '@/components/GlassNavbar';
 import { PaperShaderBackground } from '@/components/PaperShaderBackground';
+import { useTheme } from '@/contexts/ThemeContext';
 import { 
   Activity, 
   Brain, 
@@ -25,6 +26,7 @@ import {
 
 const Index = () => {
   const [activeTab, setActiveTab] = useState<string>('overview');
+  const { colors } = useTheme();
 
   const labs = [
     {
@@ -75,8 +77,8 @@ const Index = () => {
             <div className="paper-elevated text-center py-16 space-y-8">
               <div className="space-y-6">
                 <div className="flex items-center justify-center gap-3 mb-6">
-                  <Brain className="w-12 h-12 text-purple-400" />
-                  <h1 className="text-5xl md:text-6xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
+                  <Brain className="w-12 h-12" style={{ color: colors.primary }} />
+                  <h1 className={`text-5xl md:text-6xl font-bold bg-gradient-to-r ${colors.textGradient} bg-clip-text text-transparent`}>
                     NeuroScan
                   </h1>
                 </div>
@@ -86,15 +88,27 @@ const Index = () => {
                 </p>
               </div>
               <div className="flex flex-wrap justify-center gap-4">
-                <Badge variant="secondary" className="flex items-center gap-2 px-4 py-2 text-sm bg-purple-500/10 text-purple-300 border-purple-500/20">
+                <Badge variant="secondary" className="flex items-center gap-2 px-4 py-2 text-sm" style={{
+                  backgroundColor: `${colors.primary}10`,
+                  color: colors.secondary,
+                  borderColor: `${colors.primary}20`
+                }}>
                   <Shield className="w-4 h-4" />
                   Privacy-First
                 </Badge>
-                <Badge variant="secondary" className="flex items-center gap-2 px-4 py-2 text-sm bg-purple-500/10 text-purple-300 border-purple-500/20">
+                <Badge variant="secondary" className="flex items-center gap-2 px-4 py-2 text-sm" style={{
+                  backgroundColor: `${colors.primary}10`,
+                  color: colors.secondary,
+                  borderColor: `${colors.primary}20`
+                }}>
                   <Cpu className="w-4 h-4" />
                   On-Device Processing
                 </Badge>
-                <Badge variant="secondary" className="flex items-center gap-2 px-4 py-2 text-sm bg-purple-500/10 text-purple-300 border-purple-500/20">
+                <Badge variant="secondary" className="flex items-center gap-2 px-4 py-2 text-sm" style={{
+                  backgroundColor: `${colors.primary}10`,
+                  color: colors.secondary,
+                  borderColor: `${colors.primary}20`
+                }}>
                   <Sparkles className="w-4 h-4" />
                   AI-Powered Insights
                 </Badge>
@@ -160,8 +174,10 @@ const Index = () => {
                     <Card className="paper-module group cursor-pointer hover:scale-105 transition-transform duration-300">
                       <CardHeader className="pb-6">
                         <div className="flex items-center justify-between mb-4">
-                          <div className="p-3 rounded-2xl bg-gradient-to-br from-purple-500/10 to-purple-500/20">
-                            <IconComponent className="w-10 h-10 text-purple-400" />
+                          <div className="p-3 rounded-2xl bg-gradient-to-br" style={{
+                            background: `linear-gradient(to bottom right, ${colors.primary}10, ${colors.primary}20)`
+                          }}>
+                            <IconComponent className="w-10 h-10" style={{ color: colors.primary }} />
                           </div>
                           <Badge 
                             className="bg-green-500/10 text-green-400 border-green-500/20 text-sm px-3 py-1"
@@ -169,7 +185,10 @@ const Index = () => {
                             {lab.status}
                           </Badge>
                         </div>
-                        <CardTitle className="group-hover:text-purple-400 transition-colors text-2xl text-white">
+                        <CardTitle className="transition-colors text-2xl text-white" 
+                          style={{ transition: 'color 0.3s ease' }}
+                          onMouseEnter={(e) => e.currentTarget.style.color = colors.primary}
+                          onMouseLeave={(e) => e.currentTarget.style.color = 'white'}>
                           {lab.title}
                         </CardTitle>
                         <CardDescription className="text-lg leading-relaxed text-gray-300">

@@ -204,4 +204,50 @@
   .status-normal { @apply bg-success/10 text-success border-success/20; }
   .status-warning { @apply bg-warning/10 text-warning border-warning/20; }
   .status-abnormal { @apply bg-destructive/10 text-destructive border-destructive/20; }
+
+  /* Theme-specific styles */
+  .theme-violet {
+    --theme-primary: #8b5cf6;
+    --theme-secondary: #a78bfa;
+    --theme-accent: #c084fc;
+  }
+
+  .theme-blue {
+    --theme-primary: #3b82f6;
+    --theme-secondary: #60a5fa;
+    --theme-accent: #93c5fd;
+  }
+
+  .theme-purple {
+    --theme-primary: #9333ea;
+    --theme-secondary: #a855f7;
+    --theme-accent: #c084fc;
+  }
+
+  .theme-cosmic {
+    --theme-primary: #6366f1;
+    --theme-secondary: #8b5cf6;
+    --theme-accent: #06b6d4;
+  }
+
+  /* Global body styling for themes */
+  body {
+    transition: background 0.3s ease;
+  }
+
+  .theme-violet body {
+    background: linear-gradient(135deg, #0f0a1f 0%, #1a0f2e 50%, #241840 100%);
+  }
+
+  .theme-blue body {
+    background: linear-gradient(135deg, #0a0f1a 0%, #0f1419 50%, #162340 100%);
+  }
+
+  .theme-purple body {
+    background: linear-gradient(135deg, #0f0a1f 0%, #1e0f2e 50%, #2e1648 100%);
+  }
+
+  .theme-cosmic body {
+    background: linear-gradient(135deg, #0a0f1f 0%, #0f1428 50%, #28165e 100%);
+  }
 }

@@ -3,8 +3,11 @@ import { GlassNavbar } from '@/components/GlassNavbar';
 import { PaperShaderBackground } from '@/components/PaperShaderBackground';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Brain, Shield, Cpu, Lightbulb } from 'lucide-react';
+import { useTheme } from '@/contexts/ThemeContext';
 
 const Purpose = () => {
+  const { colors } = useTheme();
+  
   return (
     <div className="min-h-screen">
       <PaperShaderBackground />
@@ -13,8 +16,8 @@ const Purpose = () => {
         <div className="max-w-4xl mx-auto">
           <Card className="paper-module">
             <CardHeader className="text-center pb-8">
-              <Lightbulb className="w-16 h-16 mx-auto mb-6 text-purple-400" />
-              <CardTitle className="text-4xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
+              <Lightbulb className="w-16 h-16 mx-auto mb-6" style={{ color: colors.primary }} />
+              <CardTitle className={`text-4xl font-bold bg-gradient-to-r ${colors.textGradient} bg-clip-text text-transparent`}>
                 The Purpose of NeuroScan
               </CardTitle>
               <p className="text-xl text-gray-300 mt-4">
