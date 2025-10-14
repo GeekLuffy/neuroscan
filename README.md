@@ -6,6 +6,12 @@
 
 **Revolutionizing neurological healthcare through advanced AI and comprehensive sensor technology**
 
+
+[![GitHub stars](https://img.shields.io/github/stars/GeekLuffy/neuroscan?style=for-the-badge&logo=github)](https://github.com/GeekLuffy/neuroscan)
+[![GitHub forks](https://img.shields.io/github/forks/GeekLuffy/neuroscan?style=for-the-badge&logo=github)](https://github.com/GeekLuffy/neuroscan)
+[![GitHub issues](https://img.shields.io/github/issues/GeekLuffy/neuroscan?style=for-the-badge&logo=github)](https://github.com/GeekLuffy/neuroscan/issues)
+[![GitHub license](https://img.shields.io/github/license/GeekLuffy/neuroscan?style=for-the-badge&logo=github)](https://github.com/GeekLuffy/neuroscan/blob/main/LICENSE)
+
 [![React](https://img.shields.io/badge/React-18.3.1-61DAFB?style=flat-square&logo=react)](https://reactjs.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.8.3-3178C6?style=flat-square&logo=typescript)](https://www.typescriptlang.org/)
 [![Vite](https://img.shields.io/badge/Vite-5.4.19-646CFF?style=flat-square&logo=vite)](https://vitejs.dev/)
@@ -223,8 +229,8 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## 📞 Support
 
 - **Documentation**: [docs/SETUP.md](docs/SETUP.md)
-- **Issues**: [GitHub Issues](https://github.com/your-username/neuroscan/issues)
-- **Discussions**: [GitHub Discussions](https://github.com/your-username/neuroscan/discussions)
+- **Issues**: [GitHub Issues](https://github.com/GeekLuffy/neuroscan/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/GeekLuffy/neuroscan/discussions)
 
 ## 🌐 Deployment
 
@@ -239,11 +245,4 @@ The app is a standard React SPA and can be deployed to any static hosting servic
 
 ---
 
-<div align="center">
-
 **Made with ❤️ for advancing neurological healthcare by Team ORBIT**
-
-[![GitHub stars](https://img.shields.io/github/stars/GeekLuffy/neuroscan?style=social)](https://github.com/GeekLuffy/neuroscan)
-[![GitHub forks](https://img.shields.io/github/forks/GeekLuffy/neuroscan?style=social)](https://github.com/GeekLuffy/neuroscan)
-
-</div>
