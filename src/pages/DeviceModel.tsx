@@ -126,7 +126,7 @@ const DeviceModel: React.FC = () => {
           {/* Header */}
           <div className="text-center mb-16">
             <h1 className="text-4xl md:text-6xl font-bold mb-6">
-              <span className={`bg-gradient-to-r ${colors.textGradient} bg-clip-text text-transparent`}>NeuraScreen</span> Device
+              <span className={`bg-gradient-to-r ${colors.textGradient} bg-clip-text text-transparent`}>NeuraScan</span> Device
             </h1>
             <p className="text-xl text-gray-300 max-w-3xl mx-auto leading-relaxed">
               Professional-Grade Neurological Screening Hardware combining multiple medical-grade sensors 
@@ -143,7 +143,7 @@ const DeviceModel: React.FC = () => {
                   <div className="aspect-square relative overflow-hidden">
                     <img 
                       src={`/idea${num}.png`} 
-                      alt={`NeuraScreen Device Concept ${num}`}
+                      alt={`NeuraScan Device Concept ${num}`}
                       className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
@@ -164,7 +164,7 @@ const DeviceModel: React.FC = () => {
               <CardContent className="p-8">
                 <h2 className="text-3xl font-bold text-white mb-6 text-center">Overview</h2>
                 <p className="text-lg text-gray-300 leading-relaxed text-center max-w-4xl mx-auto">
-                  The NeuraScreen device is a comprehensive, wearable neurological screening kit designed for primary healthcare settings. 
+                  The NeuraScan device is a comprehensive, wearable neurological screening kit designed for primary healthcare settings. 
                   By combining multiple medical-grade sensors with our NeuraLab web platform, it enables early detection of neurological 
                   conditions including Parkinson's disease, Alzheimer's disease, and epilepsy.
                 </p>
@@ -311,7 +311,7 @@ const DeviceModel: React.FC = () => {
             <Card className="glass-card max-w-2xl mx-auto">
               <CardContent className="p-8">
                 <h3 className="text-2xl font-bold text-white mb-4">
-                  Experience NeuraScreen
+                  Experience NeuraScan
                 </h3>
                 <p className="text-gray-300 mb-6">
                   Try our AI-powered neurological screening platform and discover how technology 

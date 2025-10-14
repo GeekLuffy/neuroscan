@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Switch } from '@/components/ui/switch';
@@ -7,7 +7,9 @@ import { Slider } from '@/components/ui/slider';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { X, Settings, Volume2, Camera, Brain, Download, Trash2 } from 'lucide-react';
+import { X, Settings, Volume2, Camera, Brain, Download, Trash2, RotateCcw, Shield } from 'lucide-react';
+import { useSettings } from '@/contexts/SettingsContext';
+import { useEHR } from '@/contexts/EHRContext';
 
 interface SettingsModalProps {
   isOpen: boolean;
@@ -15,51 +17,8 @@ interface SettingsModalProps {
 }
 
 export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose }) => {
-  const [settings, setSettings] = useState({
-    // Audio Settings
-    audioEnabled: true,
-    microphoneGain: [75],
-    noiseReduction: true,
-    echoCancellation: true,
-    
-    // Video Settings
-    videoEnabled: true,
-    cameraResolution: '720p',
-    frameRate: '30fps',
-    
-    // Analysis Settings
-    realTimeAnalysis: true,
-    autoSave: true,
-    analysisDepth: 'standard',
-    
-    // Privacy Settings
-    dataRetention: '30days',
-    anonymousUsage: false,
-    
-    // API Settings
-    geminiApiKey: '',
-    
-    // Accessibility
-    highContrast: false,
-    largeText: false,
-    reducedMotion: false
-  });
-
-  const updateSetting = (key: string, value: any) => {
-    setSettings(prev => ({ ...prev, [key]: value }));
-  };
-
-  const exportData = () => {
-    // Implementation for exporting user data
-    console.log('Exporting data...');
-  };
-
-  const clearData = () => {
-    // Implementation for clearing user data
-    if (confirm('Are you sure you want to clear all data? This action cannot be undone.')) {
-      console.log('Clearing data...');
-    }
-  };
+  const { settings, updateSetting, resetSettings, exportSettings } = useSettings();
+  const { ehrSettings, updateEHRSettings } = useEHR();
 
   if (!isOpen) return null;
 
@@ -83,12 +42,13 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose })
         
         <CardContent className="overflow-y-auto">
           <Tabs defaultValue="audio" className="w-full">
-            <TabsList className="grid w-full grid-cols-2 lg:grid-cols-5 mb-6">
+            <TabsList className="grid w-full grid-cols-2 lg:grid-cols-6 mb-6">
               <TabsTrigger value="audio">Audio</TabsTrigger>
               <TabsTrigger value="video">Video</TabsTrigger>
               <TabsTrigger value="analysis">Analysis</TabsTrigger>
               <TabsTrigger value="privacy">Privacy</TabsTrigger>
               <TabsTrigger value="accessibility">Access</TabsTrigger>
+              <TabsTrigger value="ehr">EHR</TabsTrigger>
             </TabsList>
 
             <TabsContent value="audio" className="space-y-6">
@@ -229,12 +189,23 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose })
                       type="password"
                       value={settings.geminiApiKey}
                       onChange={(e) => updateSetting('geminiApiKey', e.target.value)}
-                      placeholder="Enter your Gemini API key"
+                      placeholder={
+                        import.meta.env.VITE_GEMINI_API_KEY 
+                          ? "Using environment variable (leave empty to use default)"
+                          : "Enter your Gemini API key"
+                      }
                       className="bg-gray-800/50 border-gray-600 text-white"
                     />
-                    <p className="text-xs text-gray-400">
-                      Get your API key from <a href="https://makersuite.google.com/app/apikey" target="_blank" className="text-purple-400 hover:underline">Google AI Studio</a>
-                    </p>
+                    <div className="space-y-1">
+                      {import.meta.env.VITE_GEMINI_API_KEY && (
+                        <p className="text-xs text-green-400">
+                          ✓ Environment variable detected - will be used as fallback if no key is entered above
+                        </p>
+                      )}
+                      <p className="text-xs text-gray-400">
+                        Get your API key from <a href="https://makersuite.google.com/app/apikey" target="_blank" className="text-purple-400 hover:underline">Google AI Studio</a>
+                      </p>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -268,22 +239,39 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose })
                     />
                   </div>
                   
-                  <div className="flex gap-3 pt-4">
+                  <div className="flex flex-wrap gap-3 pt-4">
                     <Button
-                      onClick={exportData}
+                      onClick={exportSettings}
                       className="flex items-center gap-2 bg-blue-500 hover:bg-blue-600"
                     >
                       <Download className="w-4 h-4" />
-                      Export Data
+                      Export Settings
                     </Button>
                     
                     <Button
-                      onClick={clearData}
+                      onClick={() => {
+                        if (confirm('Reset all settings to default values?')) {
+                          resetSettings();
+                        }
+                      }}
+                      variant="outline"
+                      className="flex items-center gap-2"
+                    >
+                      <RotateCcw className="w-4 h-4" />
+                      Reset to Defaults
+                    </Button>
+                    
+                    <Button
+                      onClick={() => {
+                        if (confirm('Are you sure you want to clear all settings? This will reset everything to default values.')) {
+                          resetSettings();
+                        }
+                      }}
                       variant="destructive"
                       className="flex items-center gap-2"
                     >
                       <Trash2 className="w-4 h-4" />
-                      Clear All Data
+                      Clear All Settings
                     </Button>
                   </div>
                 </div>
@@ -318,6 +306,69 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose })
                       onCheckedChange={(checked) => updateSetting('reducedMotion', checked)}
                     />
                   </div>
+                </div>
+              </div>
+            </TabsContent>
+
+            <TabsContent value="ehr" className="space-y-6">
+              <div className="glass-card p-4 space-y-4">
+                <h3 className="text-lg font-semibold text-white flex items-center gap-2">
+                  <Shield className="w-5 h-5 text-purple-400" />
+                  EHR Integration
+                </h3>
+                
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <div className="space-y-1">
+                      <Label className="text-gray-300">Enable EHR Integration</Label>
+                      <p className="text-xs text-gray-400">
+                        Connect with Ayushman Bharat Digital Mission (ABDM)
+                      </p>
+                    </div>
+                    <Switch
+                      checked={ehrSettings.enabled}
+                      onCheckedChange={(checked) => updateEHRSettings({ enabled: checked })}
+                    />
+                  </div>
+                  
+                  <div className="flex items-center justify-between">
+                    <div className="space-y-1">
+                      <Label className="text-gray-300">Auto-Upload Test Results</Label>
+                      <p className="text-xs text-gray-400">
+                        Automatically upload results to your ABHA health record
+                      </p>
+                    </div>
+                    <Switch
+                      checked={ehrSettings.autoUpload}
+                      onCheckedChange={(checked) => updateEHRSettings({ autoUpload: checked })}
+                      disabled={!ehrSettings.enabled}
+                    />
+                  </div>
+
+                  <div className="pt-4 border-t border-gray-700">
+                    <p className="text-sm text-gray-400 mb-3">
+                      EHR integration allows you to:
+                    </p>
+                    <ul className="text-xs text-gray-400 space-y-2 list-disc list-inside">
+                      <li>Access your complete medical history</li>
+                      <li>Share test results with doctors instantly</li>
+                      <li>Track health trends over time</li>
+                      <li>Get automated referrals to specialists</li>
+                      <li>Store results in government-backed secure platform</li>
+                    </ul>
+                  </div>
+
+                  <Button 
+                    variant="outline" 
+                    className="w-full"
+                    onClick={() => {
+                      onClose();
+                      window.location.href = '/ehr';
+                    }}
+                  >
+                    <Shield className="w-4 h-4 mr-2" />
+                    Go to EHR Integration
+                  </Button>
                 </div>
               </div>
             </TabsContent>

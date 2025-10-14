@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { Brain, MessageCircle, HelpCircle, Settings, Menu, X, Home, Cpu, Palette, Smartphone, Target, Info } from 'lucide-react';
+import { Brain, MessageCircle, HelpCircle, Settings, Menu, X, Home, Cpu, Palette, Smartphone, Target, Info, Hospital } from 'lucide-react';
 import { ChatBot } from './ChatBot';
 import { FAQModal } from './FAQModal';
 import { SettingsModal } from './SettingsModal';
@@ -25,6 +25,7 @@ export const GlassNavbar: React.FC<GlassNavbarProps> = ({ showBack, onBackClick 
     { label: 'Purpose', href: '/purpose', icon: Target },
     { label: 'Hardware', href: '/hardware-integration', icon: Cpu },
     { label: 'Device', href: '/device-model', icon: Smartphone },
+    { label: 'EHR', href: '/ehr', icon: Hospital },
     { label: 'About', href: '/about', icon: Info },
   ];
 

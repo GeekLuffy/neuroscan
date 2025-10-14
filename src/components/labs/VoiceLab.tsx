@@ -3,7 +3,6 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Mic, MicOff, Play, Square, TrendingUp, Activity, Brain, Download, FileText, X } from "lucide-react";
 
 // Voice analysis types and utilities (enhanced from the provided prototype)
@@ -18,6 +17,46 @@ interface AnalysisResults {
   qualityScore: number;
   riskLevel: string;
   recommendations: string[];
+  clinicalFindings: ClinicalFinding[];
+  diseaseRiskAssessment: DiseaseRiskAssessment;
+  voiceCharacteristics: VoiceCharacteristics;
+}
+
+interface ClinicalFinding {
+  parameter: string;
+  value: string;
+  normalRange: string;
+  status: 'normal' | 'borderline' | 'abnormal';
+  clinicalSignificance: string;
+}
+
+interface DiseaseRiskAssessment {
+  parkinsons: {
+    riskLevel: 'low' | 'moderate' | 'high';
+    confidence: number;
+    indicators: string[];
+    symptoms: string[];
+  };
+  alzheimers: {
+    riskLevel: 'low' | 'moderate' | 'high';
+    confidence: number;
+    indicators: string[];
+    symptoms: string[];
+  };
+  laryngealDisorders: {
+    riskLevel: 'low' | 'moderate' | 'high';
+    confidence: number;
+    indicators: string[];
+    symptoms: string[];
+  };
+}
+
+interface VoiceCharacteristics {
+  pitchStability: number;
+  voiceQuality: 'normal' | 'breathy' | 'rough' | 'strained';
+  articulation: 'clear' | 'mild_impairment' | 'moderate_impairment' | 'severe_impairment';
+  prosody: 'normal' | 'monotone' | 'irregular';
+  overallAssessment: string;
 }
 
 function autocorrelatePitch(buf: FloatArray, sampleRate: number) {
@@ -162,6 +201,271 @@ function hzToNote(f: number) {
   return `${name}${octave}`;
 }
 
+// Advanced clinical analysis functions
+function generateClinicalFindings(pitch: number | null, loudness: number, jitter: number | null): ClinicalFinding[] {
+  const findings: ClinicalFinding[] = [];
+
+  // Fundamental Frequency Analysis
+  if (pitch !== null) {
+    const pitchStatus = pitch < 85 ? 'abnormal' : pitch > 300 ? 'abnormal' : pitch < 100 || pitch > 250 ? 'borderline' : 'normal';
+    findings.push({
+      parameter: 'Fundamental Frequency (F0)',
+      value: `${pitch.toFixed(1)} Hz`,
+      normalRange: '100-250 Hz (adults)',
+      status: pitchStatus,
+      clinicalSignificance: pitchStatus === 'abnormal' 
+        ? 'Significant deviation from normal range may indicate vocal fold pathology or neurological involvement'
+        : pitchStatus === 'borderline'
+        ? 'Mild deviation that may warrant monitoring'
+        : 'Within normal limits for healthy adult voice'
+    });
+  }
+
+  // Voice Amplitude Analysis
+  const loudnessStatus = loudness < 0.01 ? 'abnormal' : loudness > 0.15 ? 'abnormal' : loudness < 0.03 || loudness > 0.12 ? 'borderline' : 'normal';
+  findings.push({
+    parameter: 'Voice Amplitude (RMS)',
+    value: loudness.toFixed(4),
+    normalRange: '0.03-0.12 (normalized)',
+    status: loudnessStatus,
+    clinicalSignificance: loudnessStatus === 'abnormal'
+      ? 'Significant amplitude deviation may indicate respiratory or vocal fold dysfunction'
+      : loudnessStatus === 'borderline'
+      ? 'Mild amplitude variation that may indicate early voice changes'
+      : 'Normal voice amplitude suggesting adequate vocal fold closure and respiratory support'
+  });
+
+  // Jitter Analysis
+  if (jitter !== null) {
+    const jitterStatus = jitter > 0.1 ? 'abnormal' : jitter > 0.06 ? 'borderline' : 'normal';
+    findings.push({
+      parameter: 'Pitch Perturbation (Jitter)',
+      value: `${(jitter * 100).toFixed(2)}%`,
+      normalRange: '<6% (healthy adults)',
+      status: jitterStatus,
+      clinicalSignificance: jitterStatus === 'abnormal'
+        ? 'High jitter indicates significant vocal instability, often associated with neurological or laryngeal pathology'
+        : jitterStatus === 'borderline'
+        ? 'Elevated jitter may indicate early voice changes or mild vocal instability'
+        : 'Normal pitch stability indicating healthy vocal fold vibration'
+    });
+  }
+
+  return findings;
+}
+
+function assessDiseaseRisk(pitch: number | null, loudness: number, jitter: number | null, pitchHistory: number[]): DiseaseRiskAssessment {
+  // Calculate pitch stability from history
+  const pitchStability = pitchHistory.length > 5 
+    ? 1 - (Math.sqrt(pitchHistory.reduce((acc, p, i) => i > 0 ? acc + Math.pow(p - pitchHistory[i-1], 2) : acc, 0) / (pitchHistory.length - 1)) / 100)
+    : 0.5;
+
+  // Parkinson's Disease Assessment
+  const parkinsonsIndicators: string[] = [];
+  const parkinsonsSymptoms: string[] = [];
+  let parkinsonsRisk: 'low' | 'moderate' | 'high' = 'low';
+  let parkinsonsConfidence = 0;
+
+  if (pitch !== null && pitch < 120) {
+    parkinsonsIndicators.push('Reduced fundamental frequency');
+    parkinsonsSymptoms.push('Monotone speech pattern');
+    parkinsonsConfidence += 0.2;
+  }
+  if (loudness < 0.04) {
+    parkinsonsIndicators.push('Reduced voice amplitude');
+    parkinsonsSymptoms.push('Soft, weak voice (hypophonia)');
+    parkinsonsConfidence += 0.25;
+  }
+  if (jitter !== null && jitter > 0.08) {
+    parkinsonsIndicators.push('Increased pitch perturbation');
+    parkinsonsSymptoms.push('Voice tremor or shakiness');
+    parkinsonsConfidence += 0.2;
+  }
+  if (pitchStability < 0.6) {
+    parkinsonsIndicators.push('Poor pitch control');
+    parkinsonsSymptoms.push('Difficulty maintaining steady pitch');
+    parkinsonsConfidence += 0.15;
+  }
+
+  if (parkinsonsConfidence > 0.5) parkinsonsRisk = 'high';
+  else if (parkinsonsConfidence > 0.25) parkinsonsRisk = 'moderate';
+
+  // Alzheimer's Disease Assessment
+  const alzheimerIndicators: string[] = [];
+  const alzheimerSymptoms: string[] = [];
+  let alzheimerRisk: 'low' | 'moderate' | 'high' = 'low';
+  let alzheimerConfidence = 0;
+
+  if (pitch !== null && (pitch < 100 || pitch > 280)) {
+    alzheimerIndicators.push('Abnormal pitch range');
+    alzheimerSymptoms.push('Difficulty controlling voice pitch');
+    alzheimerConfidence += 0.15;
+  }
+  if (pitchStability < 0.5) {
+    alzheimerIndicators.push('Reduced prosodic control');
+    alzheimerSymptoms.push('Monotonous or irregular speech rhythm');
+    alzheimerConfidence += 0.2;
+  }
+  if (loudness < 0.03 || loudness > 0.13) {
+    alzheimerIndicators.push('Poor volume control');
+    alzheimerSymptoms.push('Inconsistent voice loudness');
+    alzheimerConfidence += 0.15;
+  }
+
+  if (alzheimerConfidence > 0.4) alzheimerRisk = 'high';
+  else if (alzheimerConfidence > 0.2) alzheimerRisk = 'moderate';
+
+  // Laryngeal Disorders Assessment
+  const laryngealIndicators: string[] = [];
+  const laryngealSymptoms: string[] = [];
+  let laryngealRisk: 'low' | 'moderate' | 'high' = 'low';
+  let laryngealConfidence = 0;
+
+  if (jitter !== null && jitter > 0.1) {
+    laryngealIndicators.push('Severe pitch instability');
+    laryngealSymptoms.push('Rough, irregular voice quality');
+    laryngealConfidence += 0.3;
+  }
+  if (loudness < 0.02) {
+    laryngealIndicators.push('Severely reduced amplitude');
+    laryngealSymptoms.push('Breathy, weak voice');
+    laryngealConfidence += 0.25;
+  }
+  if (pitch !== null && pitch < 90) {
+    laryngealIndicators.push('Abnormally low pitch');
+    laryngealSymptoms.push('Hoarse, deep voice quality');
+    laryngealConfidence += 0.2;
+  }
+
+  if (laryngealConfidence > 0.5) laryngealRisk = 'high';
+  else if (laryngealConfidence > 0.25) laryngealRisk = 'moderate';
+
+  return {
+    parkinsons: {
+      riskLevel: parkinsonsRisk,
+      confidence: Math.min(parkinsonsConfidence, 1),
+      indicators: parkinsonsIndicators,
+      symptoms: parkinsonsSymptoms
+    },
+    alzheimers: {
+      riskLevel: alzheimerRisk,
+      confidence: Math.min(alzheimerConfidence, 1),
+      indicators: alzheimerIndicators,
+      symptoms: alzheimerSymptoms
+    },
+    laryngealDisorders: {
+      riskLevel: laryngealRisk,
+      confidence: Math.min(laryngealConfidence, 1),
+      indicators: laryngealIndicators,
+      symptoms: laryngealSymptoms
+    }
+  };
+}
+
+function analyzeVoiceCharacteristics(pitch: number | null, loudness: number, jitter: number | null, pitchHistory: number[]): VoiceCharacteristics {
+  // Calculate pitch stability
+  const pitchStability = pitchHistory.length > 5 
+    ? 1 - (Math.sqrt(pitchHistory.reduce((acc, p, i) => i > 0 ? acc + Math.pow(p - pitchHistory[i-1], 2) : acc, 0) / (pitchHistory.length - 1)) / 100)
+    : 0.5;
+
+  // Assess voice quality
+  let voiceQuality: 'normal' | 'breathy' | 'rough' | 'strained' = 'normal';
+  if (loudness < 0.03 && jitter !== null && jitter > 0.05) voiceQuality = 'breathy';
+  else if (jitter !== null && jitter > 0.08) voiceQuality = 'rough';
+  else if (loudness > 0.12 && pitch !== null && pitch > 250) voiceQuality = 'strained';
+
+  // Assess articulation (simplified based on available metrics)
+  let articulation: 'clear' | 'mild_impairment' | 'moderate_impairment' | 'severe_impairment' = 'clear';
+  if (jitter !== null && jitter > 0.1) articulation = 'severe_impairment';
+  else if (jitter !== null && jitter > 0.08) articulation = 'moderate_impairment';
+  else if (jitter !== null && jitter > 0.06) articulation = 'mild_impairment';
+
+  // Assess prosody
+  let prosody: 'normal' | 'monotone' | 'irregular' = 'normal';
+  if (pitchStability < 0.3) prosody = 'irregular';
+  else if (pitchStability < 0.6 && pitch !== null && pitch < 120) prosody = 'monotone';
+
+  // Overall assessment
+  let overallAssessment = 'Voice characteristics within normal limits';
+  if (voiceQuality !== 'normal' || articulation !== 'clear' || prosody !== 'normal') {
+    overallAssessment = 'Voice characteristics suggest possible vocal or neurological involvement requiring clinical evaluation';
+  }
+
+  return {
+    pitchStability,
+    voiceQuality,
+    articulation,
+    prosody,
+    overallAssessment
+  };
+}
+
+function generateAdvancedRecommendations(diseaseRisk: DiseaseRiskAssessment, voiceCharacteristics: VoiceCharacteristics, clinicalFindings: ClinicalFinding[]): string[] {
+  const recommendations: string[] = [];
+
+  // General recommendations based on findings
+  const abnormalFindings = clinicalFindings.filter(f => f.status === 'abnormal');
+  const borderlineFindings = clinicalFindings.filter(f => f.status === 'borderline');
+
+  if (abnormalFindings.length > 0) {
+    recommendations.push('Recommend comprehensive voice evaluation by speech-language pathologist');
+    recommendations.push('Consider laryngoscopic examination to assess vocal fold structure and function');
+  }
+
+  if (borderlineFindings.length > 0) {
+    recommendations.push('Monitor voice changes over time with regular assessments');
+    recommendations.push('Consider voice therapy consultation for optimization of vocal function');
+  }
+
+  // Disease-specific recommendations
+  if (diseaseRisk.parkinsons.riskLevel === 'high') {
+    recommendations.push('Recommend neurological evaluation for movement disorders assessment');
+    recommendations.push('Consider Lee Silverman Voice Treatment (LSVT LOUD) if Parkinson\'s is confirmed');
+    recommendations.push('Monitor for other Parkinson\'s symptoms: tremor, rigidity, bradykinesia');
+  } else if (diseaseRisk.parkinsons.riskLevel === 'moderate') {
+    recommendations.push('Consider baseline neurological screening');
+    recommendations.push('Implement voice exercises to maintain vocal strength and clarity');
+  }
+
+  if (diseaseRisk.alzheimers.riskLevel === 'high') {
+    recommendations.push('Recommend cognitive assessment and neuropsychological evaluation');
+    recommendations.push('Consider speech therapy focused on communication strategies');
+    recommendations.push('Monitor for other cognitive symptoms: memory loss, confusion, language difficulties');
+  } else if (diseaseRisk.alzheimers.riskLevel === 'moderate') {
+    recommendations.push('Consider cognitive screening assessment');
+    recommendations.push('Implement communication exercises to maintain language skills');
+  }
+
+  if (diseaseRisk.laryngealDisorders.riskLevel === 'high') {
+    recommendations.push('Urgent otolaryngology referral for laryngeal examination');
+    recommendations.push('Avoid vocal trauma and implement voice rest protocols');
+    recommendations.push('Consider voice therapy for vocal rehabilitation');
+  } else if (diseaseRisk.laryngealDisorders.riskLevel === 'moderate') {
+    recommendations.push('Schedule routine laryngeal examination');
+    recommendations.push('Implement vocal hygiene practices');
+  }
+
+  // Voice quality specific recommendations
+  if (voiceCharacteristics.voiceQuality === 'breathy') {
+    recommendations.push('Practice breath support exercises and vocal strengthening');
+  } else if (voiceCharacteristics.voiceQuality === 'rough') {
+    recommendations.push('Implement vocal rest and hydration protocols');
+  } else if (voiceCharacteristics.voiceQuality === 'strained') {
+    recommendations.push('Focus on vocal relaxation techniques and stress reduction');
+  }
+
+  // General voice health recommendations
+  if (recommendations.length === 0) {
+    recommendations.push('Maintain good vocal hygiene: stay hydrated, avoid excessive throat clearing');
+    recommendations.push('Continue regular voice monitoring for early detection of changes');
+  }
+
+  recommendations.push('Results should be interpreted by qualified healthcare professionals');
+  recommendations.push('This screening tool is not a substitute for professional medical diagnosis');
+
+  return recommendations;
+}
+
 export const VoiceLab: React.FC = () => {
   const [permission, setPermission] = useState<"idle" | "granted" | "denied">("idle");
   const [isRecording, setIsRecording] = useState(false);
@@ -173,7 +477,22 @@ export const VoiceLab: React.FC = () => {
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [recordingData, setRecordingData] = useState<Blob | null>(null);
   const [analysisResults, setAnalysisResults] = useState<AnalysisResults | null>(null);
-  const [showReport, setShowReport] = useState(false);
+  
+  // Ref for the report section to enable auto-scroll
+  const reportRef = useRef<HTMLDivElement>(null);
+
+  // Auto-scroll to report when analysis results are generated
+  useEffect(() => {
+    if (analysisResults && reportRef.current) {
+      setTimeout(() => {
+        reportRef.current?.scrollIntoView({ 
+          behavior: 'smooth', 
+          block: 'start',
+          inline: 'nearest'
+        });
+      }, 300);
+    }
+  }, [analysisResults]);
 
   const audioCtxRef = useRef<AudioContext | null>(null);
   const sourceRef = useRef<MediaStreamAudioSourceNode | null>(null);
@@ -461,14 +780,32 @@ export const VoiceLab: React.FC = () => {
         jitter: finalJitter,
         qualityScore: 0, // Will be calculated below
         riskLevel: 'Low', // Will be calculated below
-        recommendations: []
+        recommendations: [],
+        clinicalFindings: [],
+        diseaseRiskAssessment: {
+          parkinsons: { riskLevel: 'low', confidence: 0, indicators: [], symptoms: [] },
+          alzheimers: { riskLevel: 'low', confidence: 0, indicators: [], symptoms: [] },
+          laryngealDisorders: { riskLevel: 'low', confidence: 0, indicators: [], symptoms: [] }
+        },
+        voiceCharacteristics: {
+          pitchStability: 0,
+          voiceQuality: 'normal',
+          articulation: 'clear',
+          prosody: 'normal',
+          overallAssessment: ''
+        }
       };
       
       // Calculate quality score based on the final values
       const finalRiskScore = calculateRiskScore(finalRms, finalJitter, finalPitch);
       results.qualityScore = (1 - finalRiskScore) * 100;
       results.riskLevel = finalRiskScore < 0.3 ? 'Low' : finalRiskScore < 0.6 ? 'Medium' : 'High';
-      results.recommendations = generateRecommendationsFromValues(finalRms, finalJitter, finalPitch);
+      
+      // Generate advanced clinical analysis
+      results.clinicalFindings = generateClinicalFindings(finalPitch, finalRms, finalJitter);
+      results.diseaseRiskAssessment = assessDiseaseRisk(finalPitch, finalRms, finalJitter, pitchHistory.current);
+      results.voiceCharacteristics = analyzeVoiceCharacteristics(finalPitch, finalRms, finalJitter, pitchHistory.current);
+      results.recommendations = generateAdvancedRecommendations(results.diseaseRiskAssessment, results.voiceCharacteristics, results.clinicalFindings);
       
       setAnalysisResults(results);
     }, 2000);
@@ -489,11 +826,6 @@ export const VoiceLab: React.FC = () => {
     URL.revokeObjectURL(url);
   };
 
-  const generateReport = () => {
-    if (!analysisResults) return;
-    
-    setShowReport(true);
-  };
 
   return (
     <div className="space-y-8 animate-fade-in pt-24">
@@ -711,16 +1043,6 @@ export const VoiceLab: React.FC = () => {
                 <Download className="w-4 h-4 mr-2" />
                 Save Session
               </Button>
-              <Button 
-                variant="outline" 
-                size="sm" 
-                className="flex-1"
-                onClick={generateReport}
-                disabled={!analysisResults}
-              >
-                <FileText className="w-4 h-4 mr-2" />
-                Generate Report
-              </Button>
             </div>
             
             <div className="text-xs text-muted-foreground p-3 bg-muted/30 rounded-lg">
@@ -731,103 +1053,316 @@ export const VoiceLab: React.FC = () => {
         </Card>
       </div>
 
-      {/* Report Modal */}
-      <Dialog open={showReport} onOpenChange={setShowReport}>
-        <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
-          <DialogHeader>
-            <DialogTitle className="flex items-center gap-2">
+      {/* Inline Advanced Analysis Report - Only shown when analysis is complete */}
+      {analysisResults && (
+        <Card ref={reportRef} className="lab-card">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
               <FileText className="w-5 h-5" />
-              Voice Analysis Report
-            </DialogTitle>
-          </DialogHeader>
-          <div className="space-y-4">
+              Advanced Voice Analysis Report
+            </CardTitle>
+            <CardDescription>
+              Comprehensive clinical analysis and recommendations
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-6">
             <div className="text-sm text-muted-foreground">
-              Generated: {analysisResults ? new Date(analysisResults.timestamp).toLocaleString() : ''}
+              Generated: {new Date(analysisResults.timestamp).toLocaleString()}
             </div>
             
-            <div className="space-y-3">
-              <h3 className="font-semibold">Key Metrics:</h3>
-              <div className="grid grid-cols-2 gap-4 text-sm">
-                <div>
-                  <span className="font-medium">Pitch (F0):</span> 
-                  {analysisResults?.pitch ? `${analysisResults.pitch.toFixed(1)} Hz (${analysisResults.note})` : 'Not detected'}
+            {/* Key Metrics Summary */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              <div className="text-center p-4 rounded-lg bg-muted/50">
+                <div className="text-sm text-muted-foreground">Pitch (F0)</div>
+                <div className="text-xl font-bold">
+                  {analysisResults.pitch ? `${analysisResults.pitch.toFixed(1)} Hz` : '—'}
                 </div>
-                <div>
-                  <span className="font-medium">Loudness:</span> 
-                  {analysisResults?.loudness.toFixed(3)}
+                <div className="text-xs text-muted-foreground">
+                  {analysisResults.pitch && analysisResults.note ? analysisResults.note : 'No signal'}
                 </div>
-                <div>
-                  <span className="font-medium">Jitter:</span> 
-                  {analysisResults?.jitter ? analysisResults.jitter.toFixed(3) : 'Not available'}
+              </div>
+              <div className="text-center p-4 rounded-lg bg-muted/50">
+                <div className="text-sm text-muted-foreground">Jitter</div>
+                <div className="text-xl font-bold">
+                  {analysisResults.jitter ? `${(analysisResults.jitter * 100).toFixed(1)}%` : '—'}
                 </div>
-                <div>
-                  <span className="font-medium">Quality Score:</span> 
-                  {analysisResults?.qualityScore.toFixed(0)}%
+                <div className="text-xs text-muted-foreground">
+                  {analysisResults.jitter && analysisResults.jitter > 0.06 ? 'High variability' : 'Stable'}
                 </div>
-                <div className="col-span-2">
-                  <span className="font-medium">Risk Level:</span> 
-                  {analysisResults?.riskLevel}
+              </div>
+              <div className="text-center p-4 rounded-lg bg-muted/50">
+                <div className="text-sm text-muted-foreground">Quality Score</div>
+                <div className="text-xl font-bold">{analysisResults.qualityScore.toFixed(0)}%</div>
+                <div className="text-xs text-muted-foreground">
+                  {analysisResults.qualityScore >= 70 ? 'Good' : analysisResults.qualityScore >= 40 ? 'Fair' : 'Poor'}
                 </div>
+              </div>
+              <div className="text-center p-4 rounded-lg bg-muted/50">
+                <div className="text-sm text-muted-foreground">Overall Risk</div>
+                <div className="text-xl font-bold">{analysisResults.riskLevel}</div>
+                <div className="text-xs text-muted-foreground">Screening Level</div>
               </div>
             </div>
 
+            {/* Clinical Findings */}
+            {analysisResults.clinicalFindings && analysisResults.clinicalFindings.length > 0 && (
             <div className="space-y-3">
-              <h3 className="font-semibold">Recommendations:</h3>
-              <ul className="list-disc list-inside space-y-1 text-sm">
-                {analysisResults?.recommendations.map((rec, index) => (
+                <h3 className="font-semibold text-lg">Clinical Findings</h3>
+                <div className="space-y-3">
+                  {analysisResults.clinicalFindings.map((finding, index) => (
+                    <div key={index} className="border rounded-lg p-4">
+                      <div className="flex items-center justify-between mb-2">
+                        <h4 className="font-medium">{finding.parameter}</h4>
+                        <span className={`px-2 py-1 rounded text-xs font-medium ${
+                          finding.status === 'normal' ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400' :
+                          finding.status === 'borderline' ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400' :
+                          'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400'
+                        }`}>
+                          {finding.status.toUpperCase()}
+                        </span>
+                      </div>
+                      <div className="grid grid-cols-2 gap-4 text-sm mb-2">
+                        <div><strong>Value:</strong> {finding.value}</div>
+                        <div><strong>Normal Range:</strong> {finding.normalRange}</div>
+                      </div>
+                      <div className="text-sm text-muted-foreground">
+                        <strong>Clinical Significance:</strong> {finding.clinicalSignificance}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Disease Risk Assessment */}
+            {analysisResults.diseaseRiskAssessment && (
+              <div className="space-y-3">
+                <h3 className="font-semibold text-lg">Disease Risk Assessment</h3>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  {/* Parkinson's Disease */}
+                  <div className="border rounded-lg p-4">
+                    <div className="flex items-center justify-between mb-3">
+                      <h4 className="font-medium">Parkinson's Disease</h4>
+                      <span className={`px-2 py-1 rounded text-xs font-medium ${
+                        analysisResults.diseaseRiskAssessment.parkinsons.riskLevel === 'low' ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400' :
+                        analysisResults.diseaseRiskAssessment.parkinsons.riskLevel === 'moderate' ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400' :
+                        'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400'
+                      }`}>
+                        {analysisResults.diseaseRiskAssessment.parkinsons.riskLevel.toUpperCase()} RISK
+                      </span>
+                    </div>
+                    <div className="text-sm mb-2">
+                      <strong>Confidence:</strong> {(analysisResults.diseaseRiskAssessment.parkinsons.confidence * 100).toFixed(0)}%
+                    </div>
+                    {analysisResults.diseaseRiskAssessment.parkinsons.indicators.length > 0 && (
+                      <div className="text-sm mb-2">
+                        <strong>Indicators:</strong>
+                        <ul className="list-disc list-inside mt-1 text-xs">
+                          {analysisResults.diseaseRiskAssessment.parkinsons.indicators.map((indicator, idx) => (
+                            <li key={idx}>{indicator}</li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+                    {analysisResults.diseaseRiskAssessment.parkinsons.symptoms.length > 0 && (
+                      <div className="text-sm">
+                        <strong>Associated Symptoms:</strong>
+                        <ul className="list-disc list-inside mt-1 text-xs">
+                          {analysisResults.diseaseRiskAssessment.parkinsons.symptoms.map((symptom, idx) => (
+                            <li key={idx}>{symptom}</li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Alzheimer's Disease */}
+                  <div className="border rounded-lg p-4">
+                    <div className="flex items-center justify-between mb-3">
+                      <h4 className="font-medium">Alzheimer's Disease</h4>
+                      <span className={`px-2 py-1 rounded text-xs font-medium ${
+                        analysisResults.diseaseRiskAssessment.alzheimers.riskLevel === 'low' ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400' :
+                        analysisResults.diseaseRiskAssessment.alzheimers.riskLevel === 'moderate' ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400' :
+                        'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400'
+                      }`}>
+                        {analysisResults.diseaseRiskAssessment.alzheimers.riskLevel.toUpperCase()} RISK
+                      </span>
+                    </div>
+                    <div className="text-sm mb-2">
+                      <strong>Confidence:</strong> {(analysisResults.diseaseRiskAssessment.alzheimers.confidence * 100).toFixed(0)}%
+                    </div>
+                    {analysisResults.diseaseRiskAssessment.alzheimers.indicators.length > 0 && (
+                      <div className="text-sm mb-2">
+                        <strong>Indicators:</strong>
+                        <ul className="list-disc list-inside mt-1 text-xs">
+                          {analysisResults.diseaseRiskAssessment.alzheimers.indicators.map((indicator, idx) => (
+                            <li key={idx}>{indicator}</li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+                    {analysisResults.diseaseRiskAssessment.alzheimers.symptoms.length > 0 && (
+                      <div className="text-sm">
+                        <strong>Associated Symptoms:</strong>
+                        <ul className="list-disc list-inside mt-1 text-xs">
+                          {analysisResults.diseaseRiskAssessment.alzheimers.symptoms.map((symptom, idx) => (
+                            <li key={idx}>{symptom}</li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Laryngeal Disorders */}
+                  <div className="border rounded-lg p-4">
+                    <div className="flex items-center justify-between mb-3">
+                      <h4 className="font-medium">Laryngeal Disorders</h4>
+                      <span className={`px-2 py-1 rounded text-xs font-medium ${
+                        analysisResults.diseaseRiskAssessment.laryngealDisorders.riskLevel === 'low' ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400' :
+                        analysisResults.diseaseRiskAssessment.laryngealDisorders.riskLevel === 'moderate' ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400' :
+                        'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400'
+                      }`}>
+                        {analysisResults.diseaseRiskAssessment.laryngealDisorders.riskLevel.toUpperCase()} RISK
+                      </span>
+                    </div>
+                    <div className="text-sm mb-2">
+                      <strong>Confidence:</strong> {(analysisResults.diseaseRiskAssessment.laryngealDisorders.confidence * 100).toFixed(0)}%
+                    </div>
+                    {analysisResults.diseaseRiskAssessment.laryngealDisorders.indicators.length > 0 && (
+                      <div className="text-sm mb-2">
+                        <strong>Indicators:</strong>
+                        <ul className="list-disc list-inside mt-1 text-xs">
+                          {analysisResults.diseaseRiskAssessment.laryngealDisorders.indicators.map((indicator, idx) => (
+                            <li key={idx}>{indicator}</li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+                    {analysisResults.diseaseRiskAssessment.laryngealDisorders.symptoms.length > 0 && (
+                      <div className="text-sm">
+                        <strong>Associated Symptoms:</strong>
+                        <ul className="list-disc list-inside mt-1 text-xs">
+                          {analysisResults.diseaseRiskAssessment.laryngealDisorders.symptoms.map((symptom, idx) => (
+                            <li key={idx}>{symptom}</li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Voice Characteristics */}
+            {analysisResults.voiceCharacteristics && (
+              <div className="space-y-3">
+                <h3 className="font-semibold text-lg">Voice Characteristics</h3>
+              <div className="grid grid-cols-2 gap-4 text-sm">
+                <div>
+                    <strong>Pitch Stability:</strong> {(analysisResults.voiceCharacteristics.pitchStability * 100).toFixed(0)}%
+                </div>
+                <div>
+                    <strong>Voice Quality:</strong> {analysisResults.voiceCharacteristics.voiceQuality.replace('_', ' ')}
+                </div>
+                <div>
+                    <strong>Articulation:</strong> {analysisResults.voiceCharacteristics.articulation.replace('_', ' ')}
+                </div>
+                <div>
+                    <strong>Prosody:</strong> {analysisResults.voiceCharacteristics.prosody}
+                </div>
+                </div>
+                <div className="p-3 bg-muted/30 rounded-lg">
+                  <strong>Overall Assessment:</strong> {analysisResults.voiceCharacteristics.overallAssessment}
+              </div>
+            </div>
+            )}
+
+            {/* Clinical Recommendations */}
+            <div className="space-y-3">
+              <h3 className="font-semibold text-lg">Clinical Recommendations</h3>
+              <ul className="list-disc list-inside space-y-2 text-sm">
+                {analysisResults.recommendations.map((rec, index) => (
                   <li key={index}>{rec}</li>
                 ))}
               </ul>
             </div>
 
-            <div className="text-xs text-muted-foreground p-3 bg-muted/30 rounded-lg">
-              <strong>Note:</strong> This is a screening tool for research purposes only. 
-              Results are not diagnostic and should not replace professional medical evaluation.
-            </div>
-
-            <div className="flex justify-end gap-2">
-              <Button 
-                variant="outline" 
-                onClick={() => setShowReport(false)}
-              >
-                Close
-              </Button>
+            {/* Download Report Button */}
+            <div className="flex justify-center">
               <Button 
                 onClick={() => {
-                  if (!analysisResults) return;
                   const report = `
-Voice Analysis Report
+ADVANCED VOICE ANALYSIS REPORT
 Generated: ${new Date().toLocaleString()}
 
-Key Metrics:
+=== KEY METRICS ===
 - Pitch (F0): ${analysisResults.pitch ? `${analysisResults.pitch.toFixed(1)} Hz (${analysisResults.note})` : 'Not detected'}
-- Loudness: ${analysisResults.loudness.toFixed(3)}
-- Jitter: ${analysisResults.jitter ? analysisResults.jitter.toFixed(3) : 'Not available'}
+- Loudness: ${analysisResults.loudness.toFixed(4)}
+- Jitter: ${analysisResults.jitter ? `${(analysisResults.jitter * 100).toFixed(2)}%` : 'Not available'}
 - Quality Score: ${analysisResults.qualityScore.toFixed(0)}%
-- Risk Level: ${analysisResults.riskLevel}
 
-Recommendations:
+=== CLINICAL FINDINGS ===
+${analysisResults.clinicalFindings?.map(finding => 
+`${finding.parameter}: ${finding.value} (${finding.status.toUpperCase()})
+  Normal Range: ${finding.normalRange}
+  Clinical Significance: ${finding.clinicalSignificance}`
+).join('\n\n') || 'No clinical findings available'}
+
+=== DISEASE RISK ASSESSMENT ===
+
+Parkinson's Disease: ${analysisResults.diseaseRiskAssessment?.parkinsons.riskLevel.toUpperCase()} RISK (${(analysisResults.diseaseRiskAssessment?.parkinsons.confidence * 100).toFixed(0)}% confidence)
+${analysisResults.diseaseRiskAssessment?.parkinsons.indicators.length > 0 ? 
+  `Indicators: ${analysisResults.diseaseRiskAssessment.parkinsons.indicators.join(', ')}
+  Symptoms: ${analysisResults.diseaseRiskAssessment.parkinsons.symptoms.join(', ')}` : 'No specific indicators detected'}
+
+Alzheimer's Disease: ${analysisResults.diseaseRiskAssessment?.alzheimers.riskLevel.toUpperCase()} RISK (${(analysisResults.diseaseRiskAssessment?.alzheimers.confidence * 100).toFixed(0)}% confidence)
+${analysisResults.diseaseRiskAssessment?.alzheimers.indicators.length > 0 ? 
+  `Indicators: ${analysisResults.diseaseRiskAssessment.alzheimers.indicators.join(', ')}
+  Symptoms: ${analysisResults.diseaseRiskAssessment.alzheimers.symptoms.join(', ')}` : 'No specific indicators detected'}
+
+Laryngeal Disorders: ${analysisResults.diseaseRiskAssessment?.laryngealDisorders.riskLevel.toUpperCase()} RISK (${(analysisResults.diseaseRiskAssessment?.laryngealDisorders.confidence * 100).toFixed(0)}% confidence)
+${analysisResults.diseaseRiskAssessment?.laryngealDisorders.indicators.length > 0 ? 
+  `Indicators: ${analysisResults.diseaseRiskAssessment.laryngealDisorders.indicators.join(', ')}
+  Symptoms: ${analysisResults.diseaseRiskAssessment.laryngealDisorders.symptoms.join(', ')}` : 'No specific indicators detected'}
+
+=== VOICE CHARACTERISTICS ===
+- Pitch Stability: ${(analysisResults.voiceCharacteristics?.pitchStability * 100).toFixed(0)}%
+- Voice Quality: ${analysisResults.voiceCharacteristics?.voiceQuality.replace('_', ' ')}
+- Articulation: ${analysisResults.voiceCharacteristics?.articulation.replace('_', ' ')}
+- Prosody: ${analysisResults.voiceCharacteristics?.prosody}
+- Overall Assessment: ${analysisResults.voiceCharacteristics?.overallAssessment}
+
+=== CLINICAL RECOMMENDATIONS ===
 ${analysisResults.recommendations.map(rec => `• ${rec}`).join('\n')}
 
-Note: This is a screening tool for research purposes only. Results are not diagnostic and should not replace professional medical evaluation.
+=== DISCLAIMER ===
+This is an AI-powered screening tool for research and educational purposes only. 
+Results are not diagnostic and should not replace professional medical evaluation. 
+Always consult with qualified healthcare professionals for proper diagnosis and treatment.
                   `;
                   
                   const blob = new Blob([report], { type: 'text/plain' });
                   const url = URL.createObjectURL(blob);
                   const link = document.createElement('a');
                   link.href = url;
-                  link.download = `voice-report-${new Date().toISOString().split('T')[0]}.txt`;
+                  link.download = `advanced-voice-report-${new Date().toISOString().split('T')[0]}.txt`;
                   link.click();
                   URL.revokeObjectURL(url);
                 }}
               >
                 <Download className="w-4 h-4 mr-2" />
-                Download Report
+                Download Advanced Report
               </Button>
             </div>
+
+            <div className="text-xs text-muted-foreground p-4 bg-muted/30 rounded-lg border-l-4 border-yellow-500">
+              <strong>⚠️ Important Disclaimer:</strong> This is an AI-powered screening tool for research and educational purposes only. 
+              Results are not diagnostic and should not replace professional medical evaluation. Always consult with qualified healthcare 
+              professionals for proper diagnosis and treatment.
           </div>
-        </DialogContent>
-      </Dialog>
+          </CardContent>
+        </Card>
+      )}
     </div>
   );
 };

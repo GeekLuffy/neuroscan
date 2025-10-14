@@ -26,15 +26,15 @@ const Purpose = () => {
             </CardHeader>
             <CardContent className="text-lg text-gray-300 space-y-6">
               <p>
-                NeuroScan represents the evolution from concept to reality—combining our innovative web-based AI platform with the revolutionary <strong className="text-white">NeuraScreen hardware device</strong>. What began as leveraging existing technology has transformed into creating purpose-built, medical-grade hardware for comprehensive neurological screening.
+                NeuroScan represents the evolution from concept to reality—combining our innovative web-based AI platform with the revolutionary <strong className="text-white">NeuraScan hardware device</strong>. What began as leveraging existing technology has transformed into creating purpose-built, medical-grade hardware for comprehensive neurological screening.
               </p>
               <p>
-                Our mission has expanded to bridge the gap between accessible healthcare and professional-grade diagnostics. The NeuraScreen device integrates multiple medical sensors with our AI-powered web platform, enabling early detection of neurological conditions like Parkinson's disease, Alzheimer's disease, and epilepsy in primary healthcare settings.
+                Our mission has expanded to bridge the gap between accessible healthcare and professional-grade diagnostics. The NeuraScan device integrates multiple medical sensors with our AI-powered web platform, enabling early detection of neurological conditions like Parkinson's disease, Alzheimer's disease, and epilepsy in primary healthcare settings.
               </p>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8 text-center">
                 <div className="flex flex-col items-center gap-2">
                   <Smartphone className="w-10 h-10 text-purple-400" />
-                  <h3 className="font-bold text-white">NeuraScreen Device</h3>
+                  <h3 className="font-bold text-white">NeuraScan Device</h3>
                   <p className="text-sm text-gray-400">Professional-grade wearable with 6+ medical sensors and Raspberry Pi Zero processing.</p>
                 </div>
                 <div className="flex flex-col items-center gap-2">
@@ -93,7 +93,7 @@ const Purpose = () => {
               </div>
               <div className="bg-blue-500/10 border border-blue-500/20 rounded-lg p-4 mt-8">
                 <p className="text-center text-gray-300">
-                  <strong className="text-blue-400">Important:</strong> The NeuraScreen device is currently in development as a proof-of-concept for advanced neurological screening. 
+                  <strong className="text-blue-400">Important:</strong> The NeuraScan device is currently in development as a proof-of-concept for advanced neurological screening. 
                   It represents our vision for the future of accessible, technology-driven healthcare solutions that empower both patients and healthcare providers.
                 </p>
               </div>

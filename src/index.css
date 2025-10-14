@@ -2,6 +2,38 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Accessibility Settings */
+.high-contrast {
+  filter: contrast(150%) brightness(110%);
+}
+
+.large-text {
+  font-size: 1.125rem !important;
+}
+
+.large-text h1 {
+  font-size: 3.5rem !important;
+}
+
+.large-text h2 {
+  font-size: 2.5rem !important;
+}
+
+.large-text h3 {
+  font-size: 1.75rem !important;
+}
+
+.large-text p, .large-text span, .large-text div {
+  font-size: 1.125rem !important;
+}
+
+.reduced-motion * {
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.01ms !important;
+  scroll-behavior: auto !important;
+}
+
 
 @layer base {
   :root {

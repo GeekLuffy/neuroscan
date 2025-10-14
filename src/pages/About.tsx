@@ -57,7 +57,7 @@ const About: React.FC = () => {
               About <span className={`bg-gradient-to-r ${colors.textGradient} bg-clip-text text-transparent`}>NeuroScan</span>
             </h1>
             <p className="text-xl text-gray-300 max-w-3xl mx-auto leading-relaxed">
-              We're pioneering the future of neurological healthcare by developing the <strong className="text-white">NeuraScreen device</strong> - 
+              We're pioneering the future of neurological healthcare by developing the <strong className="text-white">NeuraScan device</strong> - 
               a comprehensive medical-grade hardware platform that combines advanced AI with professional sensor technology 
               for early detection and monitoring of neurological conditions.
             </p>
@@ -69,7 +69,7 @@ const About: React.FC = () => {
               <CardContent className="p-8">
                 <h2 className="text-3xl font-bold text-white mb-6 text-center">Our Mission</h2>
                 <p className="text-lg text-gray-300 leading-relaxed text-center max-w-4xl mx-auto">
-                  To revolutionize neurological healthcare by developing the <strong className="text-white">NeuraScreen device</strong> - 
+                  To revolutionize neurological healthcare by developing the <strong className="text-white">NeuraScan device</strong> - 
                   a professional-grade, wearable diagnostic platform that bridges the gap between accessible healthcare and medical precision. 
                   Our comprehensive sensor array and AI-powered analysis enable early detection of Parkinson's disease, Alzheimer's disease, 
                   and epilepsy in primary care settings, making advanced neurological screening universally accessible.
@@ -131,7 +131,7 @@ const About: React.FC = () => {
                   </CardHeader>
                   <CardContent className="mt-6 text-lg text-gray-300 space-y-6 text-center">
                     <p>
-                      Owais is the co-creator of NeuroScan, leading the backend development and AI integration for the NeuraScreen platform. 
+                      Owais is the co-creator of NeuroScan, leading the backend development and AI integration for the NeuraScan platform. 
                       He specializes in machine learning algorithms for neurological analysis, backend API development, medical sensor data processing, 
                       and seamless integration between hardware components and AI systems.
                     </p>
@@ -163,9 +163,9 @@ const About: React.FC = () => {
                   </CardHeader>
                   <CardContent className="mt-6 text-lg text-gray-300 space-y-6 text-center">
                     <p>
-                      Himanshu is the co-creator of NeuroScan, leading frontend development and IoT integration for the NeuraScreen platform. 
+                      Himanshu is the co-creator of NeuroScan, leading frontend development and IoT integration for the NeuraScan platform. 
                       He specializes in creating intuitive user interfaces, medical data visualization, IoT device communication protocols, 
-                      and seamless connectivity between the NeuraScreen hardware and web platform for real-time monitoring.
+                      and seamless connectivity between the NeuraScan hardware and web platform for real-time monitoring.
                     </p>
                     <div className="flex justify-center gap-6 mt-8">
                       <a href="https://github.com" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-white transition-colors">

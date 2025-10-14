@@ -3,7 +3,9 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
-import { Eye, TrendingUp, Timer, Target, Brain, FileText, RefreshCw, Play, Square } from 'lucide-react';
+import { Eye, TrendingUp, Timer, Target, Brain, FileText, RefreshCw, Play, Square, AlertTriangle, CheckCircle, XCircle, Activity, Zap, Clock, Hash, BookOpen } from 'lucide-react';
+import { DigitSpanTest } from './DigitSpanTest';
+import { WordListTest } from './WordListTest';
 import {
   LineChart,
   Line,
@@ -18,7 +20,6 @@ import {
  * Eye & Cognition Lab — robust, validated versions of:
  *  - Saccade reaction test (click target quickly; strict hit window & radius)
  *  - Stroop color-word interference test (respond to INK color; tracks misses & false clicks)
- *  - 2-Back working-memory test (tracks hits, misses, false alarms; optional d')
  *
  * Key improvements vs. original:
  *  - Pre-generated, controlled trials (no biased randomness)
@@ -29,7 +30,7 @@ import {
  *  - Downloadable report (JSON/CSV; PDF if jsPDF available)
  */
 
-type TestType = 'saccade' | 'stroop' | 'nback' | null;
+type TestType = 'saccade' | 'stroop' | 'digitspan' | 'wordlist' | null;
 type TestPhase = 'ready' | 'instructions' | 'running' | 'complete';
 
 type TrialResult = {
@@ -50,6 +51,45 @@ type TestSummary = {
   correctRejections?: number;
   dPrime?: number | null; // for n-back
 };
+
+// Advanced clinical analysis interfaces
+interface CognitiveClinicalFinding {
+  category: string;
+  finding: string;
+  severity: 'Normal' | 'Mild' | 'Moderate' | 'Severe';
+  clinicalSignificance: string;
+}
+
+interface CognitiveDiseaseRiskAssessment {
+  condition: string;
+  riskLevel: 'Low' | 'Medium' | 'High';
+  riskFactors: string[];
+  confidence: number;
+  clinicalMarkers: string[];
+}
+
+interface CognitiveCharacteristics {
+  executiveFunction: number;
+  processingSpeed: number;
+  attentionalControl: number;
+  workingMemory: number;
+  cognitiveFlexibility: number;
+  responseInhibition: number;
+}
+
+interface EyeAnalysisResults {
+  timestamp: string;
+  testType: string;
+  avgReactionTime: number;
+  accuracy: number;
+  dPrime: number | null;
+  qualityScore: number;
+  riskLevel: 'Low' | 'Medium' | 'High';
+  clinicalFindings: CognitiveClinicalFinding[];
+  diseaseRiskAssessment: CognitiveDiseaseRiskAssessment[];
+  cognitiveCharacteristics: CognitiveCharacteristics;
+  recommendations: string[];
+}
 
 function mean(arr: number[]): number | null {
   if (!arr.length) return null;
@@ -86,7 +126,239 @@ function invNorm(p: number) {
   r = q * q;
   return ((((((a1 * r + a2) * r + a3) * r + a4) * r + a5) * r + a6) * q)
         / ((((((b1 * r + b2) * r + b3) * r + b4) * r + b5) * r + 1));
-}  // <-- make sure this closing brace exists
+}
+
+// Advanced Clinical Analysis Functions
+function generateCognitiveClinicalFindings(testType: string, avgRT: number | null, accuracy: number, dPrime: number | null): CognitiveClinicalFinding[] {
+  const findings: CognitiveClinicalFinding[] = [];
+
+  // Reaction Time Analysis
+  if (avgRT !== null) {
+    if (testType === 'saccade') {
+      if (avgRT > 800) {
+        findings.push({
+          category: "Oculomotor Function",
+          finding: `Significantly delayed saccadic reaction time (${Math.round(avgRT)}ms)`,
+          severity: avgRT > 1200 ? 'Severe' : avgRT > 1000 ? 'Moderate' : 'Mild',
+          clinicalSignificance: "May indicate oculomotor dysfunction, cerebellar involvement, or basal ganglia disorders"
+        });
+      } else if (avgRT < 150) {
+        findings.push({
+          category: "Response Pattern",
+          finding: `Unusually fast responses (${Math.round(avgRT)}ms)`,
+          severity: 'Mild',
+          clinicalSignificance: "Possible anticipatory responses or impulsive behavior pattern"
+        });
+      } else {
+        findings.push({
+          category: "Oculomotor Function",
+          finding: `Normal saccadic reaction time (${Math.round(avgRT)}ms)`,
+          severity: 'Normal',
+          clinicalSignificance: "Intact oculomotor control and visual-motor integration"
+        });
+      }
+    } else if (testType === 'stroop') {
+      if (avgRT > 1500) {
+        findings.push({
+          category: "Executive Function",
+          finding: `Prolonged Stroop interference resolution (${Math.round(avgRT)}ms)`,
+          severity: avgRT > 2000 ? 'Severe' : avgRT > 1800 ? 'Moderate' : 'Mild',
+          clinicalSignificance: "Suggests impaired cognitive control and interference resolution"
+        });
+      } else {
+        findings.push({
+          category: "Executive Function",
+          finding: `Efficient cognitive control (${Math.round(avgRT)}ms)`,
+          severity: 'Normal',
+          clinicalSignificance: "Good executive function and attentional control"
+        });
+      }
+    }
+  }
+
+  // Accuracy Analysis
+  if (accuracy < 70) {
+    findings.push({
+      category: "Cognitive Performance",
+      finding: `Significantly impaired accuracy (${accuracy.toFixed(1)}%)`,
+      severity: accuracy < 50 ? 'Severe' : accuracy < 60 ? 'Moderate' : 'Mild',
+      clinicalSignificance: "May indicate attention deficits, cognitive impairment, or neurological dysfunction"
+    });
+  } else if (accuracy >= 90) {
+    findings.push({
+      category: "Cognitive Performance",
+      finding: `Excellent cognitive accuracy (${accuracy.toFixed(1)}%)`,
+      severity: 'Normal',
+      clinicalSignificance: "Intact cognitive processing and attention mechanisms"
+    });
+  }
+
+
+  return findings;
+}
+
+function assessCognitiveDiseaseRisk(testType: string, avgRT: number | null, accuracy: number, dPrime: number | null): CognitiveDiseaseRiskAssessment[] {
+  const assessments: CognitiveDiseaseRiskAssessment[] = [];
+
+  // Parkinson's Disease Risk
+  if (testType === 'saccade' && avgRT !== null && avgRT > 600) {
+    const riskFactors = [];
+    const clinicalMarkers = [];
+    
+    if (avgRT > 800) riskFactors.push("Significantly delayed saccadic initiation");
+    if (accuracy < 80) riskFactors.push("Reduced oculomotor precision");
+    
+    clinicalMarkers.push("Oculomotor dysfunction");
+    if (avgRT > 1000) clinicalMarkers.push("Severe bradykinesia markers");
+
+    assessments.push({
+      condition: "Parkinson's Disease",
+      riskLevel: avgRT > 1000 ? 'High' : avgRT > 800 ? 'Medium' : 'Low',
+      riskFactors,
+      confidence: Math.min(95, 60 + (avgRT - 600) / 10),
+      clinicalMarkers
+    });
+  }
+
+  // Alzheimer's Disease Risk
+  if (testType === 'stroop' && accuracy < 75) {
+    const riskFactors = [];
+    const clinicalMarkers = [];
+    
+    if (accuracy < 75) riskFactors.push("Impaired cognitive accuracy");
+    if (testType === 'stroop' && avgRT !== null && avgRT > 1500) riskFactors.push("Executive dysfunction");
+    
+    clinicalMarkers.push("Cognitive decline markers");
+
+    assessments.push({
+      condition: "Alzheimer's Disease",
+      riskLevel: accuracy < 60 ? 'High' : 'Medium',
+      riskFactors,
+      confidence: Math.min(90, 50 + Math.abs(75 - accuracy)),
+      clinicalMarkers
+    });
+  }
+
+  // ADHD Risk
+  if (testType === 'stroop' && avgRT !== null) {
+    const riskFactors = [];
+    const clinicalMarkers = [];
+    
+    if (avgRT > 1500) riskFactors.push("Prolonged interference resolution");
+    if (accuracy < 80) riskFactors.push("Attention and inhibition deficits");
+    
+    clinicalMarkers.push("Executive function impairment");
+    clinicalMarkers.push("Cognitive control difficulties");
+
+    if (avgRT > 1500 || accuracy < 80) {
+      assessments.push({
+        condition: "ADHD",
+        riskLevel: (avgRT > 1800 && accuracy < 70) ? 'High' : 'Medium',
+        riskFactors,
+        confidence: Math.min(85, 40 + (avgRT || 0) / 30),
+        clinicalMarkers
+      });
+    }
+  }
+
+  return assessments;
+}
+
+function analyzeCognitiveCharacteristics(testType: string, avgRT: number | null, accuracy: number, dPrime: number | null): CognitiveCharacteristics {
+  // Base scores (0-100)
+  let executiveFunction = 75;
+  let processingSpeed = 75;
+  let attentionalControl = 75;
+  let workingMemory = 75;
+  let cognitiveFlexibility = 75;
+  let responseInhibition = 75;
+
+  if (testType === 'saccade') {
+    // Processing speed based on reaction time
+    if (avgRT !== null) {
+      processingSpeed = Math.max(0, Math.min(100, 100 - (avgRT - 200) / 10));
+      attentionalControl = Math.max(0, Math.min(100, 100 - (avgRT - 300) / 8));
+    }
+    
+    // Executive function based on accuracy
+    executiveFunction = Math.max(0, Math.min(100, accuracy + 10));
+    
+  } else if (testType === 'stroop') {
+    // Executive function and cognitive control
+    if (avgRT !== null) {
+      executiveFunction = Math.max(0, Math.min(100, 100 - (avgRT - 800) / 15));
+      responseInhibition = Math.max(0, Math.min(100, 100 - (avgRT - 900) / 12));
+      cognitiveFlexibility = Math.max(0, Math.min(100, 100 - (avgRT - 1000) / 10));
+    }
+    
+    attentionalControl = Math.max(0, Math.min(100, accuracy + 5));
+    processingSpeed = Math.max(0, Math.min(100, accuracy));
+    
+  }
+
+  return {
+    executiveFunction: Math.round(executiveFunction),
+    processingSpeed: Math.round(processingSpeed),
+    attentionalControl: Math.round(attentionalControl),
+    workingMemory: Math.round(workingMemory),
+    cognitiveFlexibility: Math.round(cognitiveFlexibility),
+    responseInhibition: Math.round(responseInhibition)
+  };
+}
+
+function generateCognitiveRecommendations(findings: CognitiveClinicalFinding[], riskAssessments: CognitiveDiseaseRiskAssessment[], characteristics: CognitiveCharacteristics): string[] {
+  const recommendations = [];
+
+  // Based on clinical findings
+  const hasDelayedRT = findings.some(f => f.finding.includes('delayed') || f.finding.includes('Prolonged'));
+  const hasAccuracyIssues = findings.some(f => f.finding.includes('impaired accuracy'));
+  const hasWorkingMemoryIssues = findings.some(f => f.category === 'Working Memory' && f.severity !== 'Normal');
+
+  if (hasDelayedRT) {
+    recommendations.push("Consider neurological evaluation for motor and cognitive processing speed assessment");
+    recommendations.push("Implement cognitive training exercises focusing on reaction time and processing speed");
+  }
+
+  if (hasAccuracyIssues) {
+    recommendations.push("Recommend attention and concentration enhancement strategies");
+    recommendations.push("Consider evaluation for attention-related disorders");
+  }
+
+  if (hasWorkingMemoryIssues) {
+    recommendations.push("Implement working memory training programs");
+    recommendations.push("Consider cognitive rehabilitation therapy");
+  }
+
+  // Based on disease risk assessments
+  const highRiskConditions = riskAssessments.filter(r => r.riskLevel === 'High');
+  if (highRiskConditions.length > 0) {
+    recommendations.push(`Urgent referral recommended for ${highRiskConditions.map(r => r.condition).join(', ')} screening`);
+    recommendations.push("Comprehensive neuropsychological evaluation advised");
+  }
+
+  // Based on cognitive characteristics
+  if (characteristics.executiveFunction < 50) {
+    recommendations.push("Executive function training and cognitive behavioral interventions");
+  }
+  
+  if (characteristics.processingSpeed < 50) {
+    recommendations.push("Processing speed enhancement through targeted cognitive exercises");
+  }
+
+  if (characteristics.workingMemory < 50) {
+    recommendations.push("Memory enhancement strategies and cognitive training programs");
+  }
+
+  // General recommendations
+  recommendations.push("Regular cognitive monitoring and follow-up assessments");
+  recommendations.push("Maintain healthy sleep, exercise, and nutrition habits for optimal cognitive function");
+  
+  if (recommendations.length === 2) { // Only general recommendations
+    recommendations.unshift("Continue regular cognitive assessments to maintain current performance levels");
+  }
+
+  return recommendations;
+}
 
 export const EyeLab: React.FC = () => {
   // -------- Core state --------
@@ -97,14 +369,17 @@ export const EyeLab: React.FC = () => {
   const [status, setStatus] = useState('Select a cognitive test to begin assessment');
 
   const [trialResults, setTrialResults] = useState<TrialResult[]>([]);
-  const [sessionResults, setSessionResults] = useState<Record<'saccade' | 'stroop' | 'nback', TrialResult[]>>({
-    saccade: [], stroop: [], nback: []
+  const [sessionResults, setSessionResults] = useState<Record<'saccade' | 'stroop' | 'digitspan' | 'wordlist', TrialResult[]>>({
+    saccade: [], stroop: [], digitspan: [], wordlist: []
   });
+
+  // Advanced analysis state
+  const [analysisResults, setAnalysisResults] = useState<EyeAnalysisResults | null>(null);
+  const reportRef = useRef<HTMLDivElement>(null);
 
   // -------- Test-specific state --------
   const [saccadeTarget, setSaccadeTarget] = useState({ x: 50, y: 50, visible: false });
   const [stroopStimulus, setStroopStimulus] = useState({ word: '', color: '' });
-  const [nbackLetter, setNbackLetter] = useState('');
 
   // -------- Refs for timing & safety --------
   const trialStartTime = useRef<number>(0);
@@ -116,16 +391,12 @@ export const EyeLab: React.FC = () => {
   // Refs for pre-generated trial data
   const saccadeTrials = useRef<{x: number, y: number}[]>([]);
   const stroopTrials = useRef<{word: string, color: string}[]>([]);
-  const nBackSeq = useRef<string[]>([]);
   const currentTestResults = useRef<TrialResult[]>([]);
 
   // -------- Configs --------
   const totalTrials = 20;
-  const nVal = 2;
   const saccadeTimeout = 2000; // ms
   const stroopTimeout = 3000;  // ms
-  const nbackSOA = 1600;       // total time per item (ms)
-  const nbackStimulusOn = 800; // show letter duration (ms)
   const targetRadiusPx = 22;   // clickable radius for saccade target
 
   // Cleanup timers on unmount/test changes
@@ -162,27 +433,6 @@ export const EyeLab: React.FC = () => {
     return trials;
   }, [totalTrials]);
 
-  const makeNBackSeq = useCallback(() => {
-    const letters = ['A','B','C','D','E','F','G','H'];
-    const targetRate = 0.3; // ~30% targets
-    const seq: string[] = [];
-    for (let t = 0; t < totalTrials; t++) {
-      if (t >= nVal && Math.random() < targetRate) {
-        // force a match
-        seq.push(seq[t - nVal]);
-      } else {
-        // choose a letter that won't accidentally match
-        let L = letters[Math.floor(Math.random() * letters.length)];
-        if (t >= nVal) {
-          while (L === seq[t - nVal]) {
-            L = letters[Math.floor(Math.random() * letters.length)];
-          }
-        }
-        seq.push(L);
-      }
-    }
-    return seq;
-  }, [totalTrials, nVal]);
 
   const recordResult = useCallback((res: TrialResult) => {
     currentTestResults.current.push(res);
@@ -193,8 +443,13 @@ export const EyeLab: React.FC = () => {
     testActive.current = false;
     setTestProgress(100);
     setTestPhase('complete');
-    setStatus('Test complete! Review your performance and export a report.');
+    setStatus('Test complete! Generating comprehensive cognitive analysis...');
     setSessionResults(prev => ({ ...prev, [testType]: currentTestResults.current }));
+    
+    // Generate advanced analysis after a short delay
+    setTimeout(() => {
+      generateAdvancedAnalysis(testType, currentTestResults.current);
+    }, 1000);
   }, []);
 
   const advanceOrFinish = useCallback((t: number, testType: Exclude<TestType, null>) => {
@@ -238,33 +493,7 @@ export const EyeLab: React.FC = () => {
       }, stroopTimeout);
     }
 
-if (testType === 'nback') {
-  const letter = nBackSeq.current[t];
-  setNbackLetter(letter);
-  trialStartTime.current = performance.now();
-
-  // Clear letter after stimulus duration
-  const stimTimer = window.setTimeout(() => {
-    setNbackLetter('');
-  }, nbackStimulusOn);
-
-  // End-of-trial logic
-  const trialTimer = window.setTimeout(() => {
-    const wasTarget = t >= nVal && nBackSeq.current[t - nVal] === letter;
-    if (!responseTaken.current) {
-      if (wasTarget) {
-        recordResult({ trial: t + 1, rt: null, correct: false, type: 'miss', stimulus: letter });
-      } else {
-        recordResult({ trial: t + 1, rt: null, correct: true, type: 'correct_rejection', stimulus: letter });
-      }
-    }
-    advanceOrFinish(t, testType);
-  }, nbackSOA);
-
-  // Store both timers so you can clear on reset
-  activeTimer.current = trialTimer;
-}
-  }, [totalTrials, saccadeTimeout, stroopTimeout, nbackSOA, nbackStimulusOn, nVal, recordResult, advanceOrFinish]);
+  }, [totalTrials, saccadeTimeout, stroopTimeout, recordResult, advanceOrFinish]);
 
   const startTest = useCallback((testType: TestType) => {
     if (!testType) return;
@@ -281,19 +510,19 @@ if (testType === 'nback') {
     const instructionText: Record<Exclude<TestType, null>, string> = {
       saccade: 'Focus on the center. A dot will appear around the screen—click it as fast as possible. Clicks anywhere else won\'t count.',
       stroop: 'Select the INK COLOR of the word (not the text). Use keys R/B/G/Y or click.',
-      nback: 'If the current letter matches the one from 2 steps earlier, press Space or the Match button.'
+      digitspan: 'Watch the digit sequence, then enter the digits in the correct order when prompted.',
+      wordlist: 'Learn 10 words, then recall them immediately and after a delay. This is the gold standard Alzheimer\'s screening test.'
     };
     setStatus(`Instructions: ${instructionText[testType]}`);
 
     if (testType === 'saccade') saccadeTrials.current = makeSaccadeTrials();
     if (testType === 'stroop') stroopTrials.current = makeStroopTrials();
-    if (testType === 'nback') nBackSeq.current = makeNBackSeq();
 
     activeTimer.current = window.setTimeout(() => {
       setTestPhase('running');
       runTrial(0, testType);
     }, 4000);
-  }, [makeSaccadeTrials, makeStroopTrials, makeNBackSeq, runTrial]);
+  }, [makeSaccadeTrials, makeStroopTrials, runTrial]);
 
   const onSaccadeClick = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
     if (currentTest !== 'saccade' || !saccadeTarget.visible || responseTaken.current) return;
@@ -339,25 +568,6 @@ if (testType === 'nback') {
     advanceOrFinish(currentTrial - 1, 'stroop');
   }, [currentTest, stroopStimulus, currentTrial, recordResult, advanceOrFinish]);
 
-  const onNBackAnswer = useCallback(() => {
-    if (currentTest !== 'nback' || responseTaken.current) return;
-    const t = currentTrial - 1;
-    const letter = nBackSeq.current[t];
-    const isTarget = t >= nVal && nBackSeq.current[t - nVal] === letter;
-    responseTaken.current = true;
-    // Note: We don't clear the main SOA timer here, as it handles non-responses
-    
-    const rt = Math.round(performance.now() - trialStartTime.current);
-    recordResult({
-      trial: currentTrial,
-      rt,
-      correct: isTarget,
-      type: isTarget ? 'hit' : 'false_alarm',
-      stimulus: letter,
-      response: 'match_press'
-    });
-    // Don't advance here, let the main SOA timer handle it to keep rhythm
-  }, [currentTest, currentTrial, nVal, recordResult]);
 
   // Keyboard shortcuts
   useEffect(() => {
@@ -370,16 +580,78 @@ if (testType === 'nback') {
           e.preventDefault();
           onStroopAnswer(map[key]);
         }
-      } else if (currentTest === 'nback') {
-        if (e.code === 'Space') {
-          e.preventDefault();
-          onNBackAnswer();
-        }
       }
     };
     window.addEventListener('keydown', handler);
     return () => window.removeEventListener('keydown', handler);
-  }, [testPhase, currentTest, onStroopAnswer, onNBackAnswer]);
+  }, [testPhase, currentTest, onStroopAnswer]);
+
+  // Generate advanced analysis
+  const generateAdvancedAnalysis = useCallback((testType: string, results: TrialResult[]) => {
+    setStatus("Processing cognitive data and generating advanced clinical analysis...");
+    
+    setTimeout(() => {
+      const rts = results.map(r => r.rt).filter((x): x is number => typeof x === 'number');
+      const localAvgRT = mean(rts);
+      const localAccuracy = (results.filter(t => t.correct).length / results.length) * 100;
+      
+      let dPrime = null;
+
+      // Generate clinical findings
+      const clinicalFindings = generateCognitiveClinicalFindings(testType, localAvgRT, localAccuracy, dPrime);
+      
+      // Assess disease risk
+      const diseaseRiskAssessment = assessCognitiveDiseaseRisk(testType, localAvgRT, localAccuracy, dPrime);
+      
+      // Analyze cognitive characteristics
+      const cognitiveCharacteristics = analyzeCognitiveCharacteristics(testType, localAvgRT, localAccuracy, dPrime);
+      
+      // Generate recommendations
+      const recommendations = generateCognitiveRecommendations(clinicalFindings, diseaseRiskAssessment, cognitiveCharacteristics);
+      
+      // Calculate overall quality score
+      let qualityScore = 70; // Base score
+      if (localAccuracy >= 90) qualityScore += 20;
+      else if (localAccuracy >= 80) qualityScore += 10;
+      else if (localAccuracy < 60) qualityScore -= 20;
+      
+      if (localAvgRT !== null) {
+        if (testType === 'saccade' && localAvgRT < 400) qualityScore += 10;
+        else if (testType === 'stroop' && localAvgRT < 1200) qualityScore += 10;
+      }
+      
+      if (dPrime !== null && dPrime > 1.5) qualityScore += 15;
+      
+      qualityScore = Math.max(0, Math.min(100, qualityScore));
+      
+      // Determine risk level
+      const riskLevel: 'Low' | 'Medium' | 'High' = 
+        diseaseRiskAssessment.some(r => r.riskLevel === 'High') ? 'High' :
+        diseaseRiskAssessment.some(r => r.riskLevel === 'Medium') ? 'Medium' : 'Low';
+
+      const analysisResult: EyeAnalysisResults = {
+        timestamp: new Date().toISOString(),
+        testType,
+        avgReactionTime: localAvgRT || 0,
+        accuracy: localAccuracy,
+        dPrime,
+        qualityScore,
+        riskLevel,
+        clinicalFindings,
+        diseaseRiskAssessment,
+        cognitiveCharacteristics,
+        recommendations
+      };
+
+      setAnalysisResults(analysisResult);
+      setStatus('Advanced cognitive analysis complete!');
+      
+      // Auto-scroll to report
+      setTimeout(() => {
+        reportRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 300);
+    }, 1500);
+  }, [totalTrials]);
 
   const resetTest = () => {
     if (activeTimer.current) window.clearTimeout(activeTimer.current);
@@ -392,7 +664,7 @@ if (testType === 'nback') {
     setStatus('Select a cognitive test to begin assessment');
     setSaccadeTarget({ x: 50, y: 50, visible: false });
     setStroopStimulus({ word: '', color: '' });
-    setNbackLetter('');
+    setAnalysisResults(null);
   };
 
   // ------------- Summaries -------------
@@ -409,19 +681,6 @@ if (testType === 'nback') {
     return { avgRT: avg, accuracy: acc, counts: { hits, misses, fas, crs } };
   }, [trialResults]);
 
-  const nbackDPrime = useMemo(() => {
-    if (currentTest !== 'nback' || testPhase !== 'complete') return null;
-    const tr = trialResults;
-    const hits = tr.filter(t => t.type === 'hit').length;
-    const misses = tr.filter(t => t.type === 'miss').length;
-    const fas = tr.filter(t => t.type === 'false_alarm').length;
-    const crs = tr.filter(t => t.type === 'correct_rejection').length;
-    const hitRate = hits + misses > 0 ? hits / (hits + misses) : 0.5;
-    const faRate = fas + crs > 0 ? fas / (fas + crs) : 0.5;
-    const adjHit = clamp(hitRate, 1 / (2 * totalTrials), 1 - 1 / (2 * totalTrials));
-    const adjFA = clamp(faRate, 1 / (2 * totalTrials), 1 - 1 / (2 * totalTrials));
-    return +(invNorm(adjHit) - invNorm(adjFA)).toFixed(2);
-  }, [trialResults, testPhase, currentTest, totalTrials]);
 
   const chartData = useMemo(() => trialResults.map((t) => ({ trial: t.trial, rt: t.rt ?? 0 })), [trialResults]);
 
@@ -447,13 +706,6 @@ if (testType === 'nback') {
     };
     
     let dPrime = null;
-    if (testName === 'nback') {
-        const hitRate = localCounts.hits + localCounts.misses > 0 ? localCounts.hits / (localCounts.hits + localCounts.misses) : 0.5;
-        const faRate = localCounts.fas + localCounts.crs > 0 ? localCounts.fas / (localCounts.fas + localCounts.crs) : 0.5;
-        const adjHit = clamp(hitRate, 1 / (2 * totalTrials), 1 - 1 / (2 * totalTrials));
-        const adjFA = clamp(faRate, 1 / (2 * totalTrials), 1 - 1 / (2 * totalTrials));
-        dPrime = +(invNorm(adjHit) - invNorm(adjFA)).toFixed(2);
-    }
 
     const summary: TestSummary = {
       avgRT: localAvgRt,
@@ -491,14 +743,11 @@ if (testType === 'nback') {
       doc.text(`Date: ${new Date().toLocaleString()}`, 14, 34);
       doc.text(`Avg RT: ${summary.avgRT ? Math.round(summary.avgRT) + ' ms' : 'n/a'}`, 14, 40);
       doc.text(`Accuracy: ${summary.accuracy.toFixed(1)}%`, 14, 46);
-      if (testName === 'nback') {
-        doc.text(`d': ${summary.dPrime ?? 'n/a'}`, 14, 52);
-      }
       const tableRows = results.map(t => [t.trial, t.rt ?? '', t.correct ? '1' : '0', t.type ?? '', JSON.stringify(t.stimulus ?? ''), t.response ?? '']);
       autoTable(doc, {
         head: [['Trial', 'RT (ms)', 'Correct', 'Type', 'Stimulus', 'Response']],
         body: tableRows,
-        startY: testName === 'nback' ? 56 : 52,
+        startY: 52,
         styles: { fontSize: 8 },
         columnStyles: { 4: { cellWidth: 70 } },
       });
@@ -513,7 +762,8 @@ if (testType === 'nback') {
   const tests = [
     { id: 'saccade', title: 'Saccade Test', description: 'Measure eye-movement reaction speed', icon: Target },
     { id: 'stroop', title: 'Stroop Test', description: 'Attention & interference control', icon: Brain },
-    { id: 'nback', title: '2-Back Test', description: 'Working memory & vigilance', icon: Timer }
+    { id: 'digitspan', title: 'Digit Span Test', description: 'Memory span & Alzheimer\'s screening', icon: Hash },
+    { id: 'wordlist', title: 'Word List Recall', description: 'Gold standard Alzheimer\'s screening', icon: BookOpen }
   ] as const;
 
   const avgRTDisplay = avgRT ? Math.round(avgRT) : 0;
@@ -535,7 +785,11 @@ if (testType === 'nback') {
         </Badge>
       </div>
 
-      {currentTest ? (
+      {currentTest === 'digitspan' ? (
+        <DigitSpanTest />
+      ) : currentTest === 'wordlist' ? (
+        <WordListTest />
+      ) : currentTest ? (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {/* Test Area */}
           <Card>
@@ -544,7 +798,6 @@ if (testType === 'nback') {
                 <CardTitle className="capitalize flex items-center gap-2">
                   {currentTest === 'saccade' && <Target className="w-5 h-5" />} 
                   {currentTest === 'stroop' && <Brain className="w-5 h-5" />} 
-                  {currentTest === 'nback' && <Timer className="w-5 h-5" />} 
                   {currentTest} Test
                 </CardTitle>
                 <div className="flex gap-2">
@@ -596,18 +849,6 @@ if (testType === 'nback') {
                   </div>
                 )}
 
-                {/* N-Back */}
-                {currentTest === 'nback' && testPhase === 'running' && (
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <div className="text-center space-y-4">
-                      <div className="text-7xl font-bold">{nbackLetter}</div>
-                      <div className="flex items-center justify-center gap-2">
-                        <Button onClick={onNBackAnswer}><Play className="w-4 h-4 mr-1"/>Match (Space)</Button>
-                      </div>
-                      <p className="text-xs text-muted-foreground">Press only on 2-back matches</p>
-                    </div>
-                  </div>
-                )}
 
                 {/* States */}
                 {testPhase === 'instructions' && (
@@ -656,12 +897,6 @@ if (testType === 'nback') {
                   <div className="text-xs uppercase tracking-wider text-muted-foreground">False Alarms</div>
                   <div className="text-2xl font-semibold">{counts.fas}</div>
                 </div>
-                {currentTest === 'nback' && (
-                  <div className="text-center p-4 rounded-lg bg-muted/50 col-span-2">
-                    <div className="text-xs uppercase tracking-wider text-muted-foreground">d'</div>
-                    <div className="text-2xl font-semibold">{nbackDPrime ?? '—'}</div>
-                  </div>
-                )}
               </div>
 
               <div>
@@ -706,7 +941,7 @@ if (testType === 'nback') {
           ))}
 
           {/* If any prior test completed, offer a combined export */}
-          {(sessionResults.saccade.length > 0 || sessionResults.stroop.length > 0 || sessionResults.nback.length > 0) && (
+          {(sessionResults.saccade.length > 0 || sessionResults.stroop.length > 0 || sessionResults.digitspan.length > 0 || sessionResults.wordlist.length > 0) && (
             <Card className="md:col-span-3">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2"><FileText className="w-5 h-5"/> Export Past Results</CardTitle>
@@ -714,7 +949,7 @@ if (testType === 'nback') {
               </CardHeader>
               <CardContent>
                 <div className="flex flex-wrap gap-2">
-                  {(['saccade','stroop','nback'] as const).map(key => (
+                  {(['saccade','stroop','digitspan','wordlist'] as const).map(key => (
                     sessionResults[key].length > 0 ? (
                       <Button key={key} variant="outline" onClick={() => generateReport(key, sessionResults[key])}>
                         Download {key} report
@@ -725,6 +960,236 @@ if (testType === 'nback') {
               </CardContent>
             </Card>
           )}
+        </div>
+      )}
+
+      {/* Advanced Analysis Report - Inline below test blocks */}
+      {analysisResults && (
+        <div ref={reportRef} className="space-y-8 mt-12 animate-fade-in">
+          <div className="text-center">
+            <h2 className="text-2xl font-bold mb-2">Comprehensive Cognitive Analysis Report</h2>
+            <p className="text-muted-foreground">Advanced clinical assessment for {analysisResults.testType} test</p>
+          </div>
+
+          {/* Summary Overview */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Brain className="w-5 h-5" />
+                Assessment Summary
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div className="text-center p-4 rounded-lg bg-muted/50">
+                  <div className="text-xs uppercase tracking-wider text-muted-foreground">Overall Quality</div>
+                  <div className="text-2xl font-semibold">{analysisResults.qualityScore}/100</div>
+                  <Badge variant={analysisResults.qualityScore >= 80 ? "default" : analysisResults.qualityScore >= 60 ? "secondary" : "destructive"}>
+                    {analysisResults.qualityScore >= 80 ? "Excellent" : analysisResults.qualityScore >= 60 ? "Good" : "Needs Improvement"}
+                  </Badge>
+                </div>
+                <div className="text-center p-4 rounded-lg bg-muted/50">
+                  <div className="text-xs uppercase tracking-wider text-muted-foreground">Risk Level</div>
+                  <div className="text-2xl font-semibold">{analysisResults.riskLevel}</div>
+                  <Badge variant={analysisResults.riskLevel === 'Low' ? "default" : analysisResults.riskLevel === 'Medium' ? "secondary" : "destructive"}>
+                    {analysisResults.riskLevel === 'Low' ? <CheckCircle className="w-3 h-3 mr-1" /> : 
+                     analysisResults.riskLevel === 'Medium' ? <AlertTriangle className="w-3 h-3 mr-1" /> : 
+                     <XCircle className="w-3 h-3 mr-1" />}
+                    {analysisResults.riskLevel} Risk
+                  </Badge>
+                </div>
+                <div className="text-center p-4 rounded-lg bg-muted/50">
+                  <div className="text-xs uppercase tracking-wider text-muted-foreground">Avg Reaction Time</div>
+                  <div className="text-2xl font-semibold">{Math.round(analysisResults.avgReactionTime)}ms</div>
+                </div>
+                <div className="text-center p-4 rounded-lg bg-muted/50">
+                  <div className="text-xs uppercase tracking-wider text-muted-foreground">Accuracy</div>
+                  <div className="text-2xl font-semibold">{analysisResults.accuracy.toFixed(1)}%</div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Cognitive Characteristics */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Activity className="w-5 h-5" />
+                Cognitive Profile
+              </CardTitle>
+              <CardDescription>Detailed assessment of cognitive functions</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {Object.entries(analysisResults.cognitiveCharacteristics).map(([key, value]) => {
+                  const displayName = key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase());
+                  return (
+                    <div key={key} className="space-y-2">
+                      <div className="flex justify-between items-center">
+                        <span className="text-sm font-medium">{displayName}</span>
+                        <span className="text-sm text-muted-foreground">{value}/100</span>
+                      </div>
+                      <Progress value={value} className="h-2" />
+                      <div className="text-xs text-muted-foreground">
+                        {value >= 80 ? "Excellent" : value >= 60 ? "Good" : value >= 40 ? "Fair" : "Needs Improvement"}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Clinical Findings */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <FileText className="w-5 h-5" />
+                Clinical Findings
+              </CardTitle>
+              <CardDescription>Professional cognitive assessment results</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                {analysisResults.clinicalFindings.map((finding, index) => (
+                  <div key={index} className="border rounded-lg p-4">
+                    <div className="flex items-start justify-between mb-2">
+                      <div className="flex items-center gap-2">
+                        <Badge variant="outline">{finding.category}</Badge>
+                        <Badge variant={
+                          finding.severity === 'Normal' ? 'default' :
+                          finding.severity === 'Mild' ? 'secondary' :
+                          finding.severity === 'Moderate' ? 'secondary' : 'destructive'
+                        }>
+                          {finding.severity === 'Normal' ? <CheckCircle className="w-3 h-3 mr-1" /> :
+                           finding.severity === 'Mild' ? <AlertTriangle className="w-3 h-3 mr-1" /> :
+                           finding.severity === 'Moderate' ? <AlertTriangle className="w-3 h-3 mr-1" /> :
+                           <XCircle className="w-3 h-3 mr-1" />}
+                          {finding.severity}
+                        </Badge>
+                      </div>
+                    </div>
+                    <h4 className="font-semibold mb-1">{finding.finding}</h4>
+                    <p className="text-sm text-muted-foreground">{finding.clinicalSignificance}</p>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Disease Risk Assessment */}
+          {analysisResults.diseaseRiskAssessment.length > 0 && (
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <AlertTriangle className="w-5 h-5" />
+                  Disease Risk Assessment
+                </CardTitle>
+                <CardDescription>AI-powered analysis of neurological condition risks</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  {analysisResults.diseaseRiskAssessment.map((assessment, index) => (
+                    <div key={index} className="border rounded-lg p-4">
+                      <div className="flex items-start justify-between mb-3">
+                        <h4 className="font-semibold">{assessment.condition}</h4>
+                        <div className="flex items-center gap-2">
+                          <Badge variant={
+                            assessment.riskLevel === 'Low' ? 'default' :
+                            assessment.riskLevel === 'Medium' ? 'secondary' : 'destructive'
+                          }>
+                            {assessment.riskLevel === 'Low' ? <CheckCircle className="w-3 h-3 mr-1" /> :
+                             assessment.riskLevel === 'Medium' ? <AlertTriangle className="w-3 h-3 mr-1" /> :
+                             <XCircle className="w-3 h-3 mr-1" />}
+                            {assessment.riskLevel} Risk
+                          </Badge>
+                          <span className="text-xs text-muted-foreground">{assessment.confidence.toFixed(0)}% confidence</span>
+                        </div>
+                      </div>
+                      
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                          <h5 className="text-sm font-medium mb-2">Risk Factors:</h5>
+                          <ul className="text-sm text-muted-foreground space-y-1">
+                            {assessment.riskFactors.map((factor, idx) => (
+                              <li key={idx} className="flex items-start gap-2">
+                                <span className="text-destructive">•</span>
+                                {factor}
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                        <div>
+                          <h5 className="text-sm font-medium mb-2">Clinical Markers:</h5>
+                          <ul className="text-sm text-muted-foreground space-y-1">
+                            {assessment.clinicalMarkers.map((marker, idx) => (
+                              <li key={idx} className="flex items-start gap-2">
+                                <span className="text-blue-500">•</span>
+                                {marker}
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          )}
+
+          {/* Clinical Recommendations */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Zap className="w-5 h-5" />
+                Clinical Recommendations
+              </CardTitle>
+              <CardDescription>Personalized healthcare guidance based on assessment</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-3">
+                {analysisResults.recommendations.map((recommendation, index) => (
+                  <div key={index} className="flex items-start gap-3 p-3 rounded-lg bg-muted/30">
+                    <CheckCircle className="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0" />
+                    <span className="text-sm">{recommendation}</span>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Report Generation */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <FileText className="w-5 h-5" />
+                Export Report
+              </CardTitle>
+              <CardDescription>Download your comprehensive cognitive assessment</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="flex gap-4">
+                <Button 
+                  onClick={() => generateReport(currentTest, trialResults)}
+                  disabled={!currentTest}
+                  className="flex-1"
+                >
+                  <FileText className="w-4 h-4 mr-2" />
+                  Download Detailed Report
+                </Button>
+                <Button 
+                  variant="outline" 
+                  onClick={() => startTest(currentTest)}
+                  disabled={!currentTest}
+                  className="flex-1"
+                >
+                  <RefreshCw className="w-4 h-4 mr-2" />
+                  Retake Test
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
         </div>
       )}
     </div>
