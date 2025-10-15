@@ -4,7 +4,7 @@
 
 ![NeuroScan Logo](https://img.shields.io/badge/NeuroScan-AI%20Powered%20Neurological%20Health-blue?style=for-the-badge&logo=brain)
 
-**Revolutionizing neurological healthcare through advanced AI and comprehensive sensor technology**
+**Revolutionizing neurological healthcare through advanced AI and comprehensive sensor technology** 
 
 
 [![GitHub stars](https://img.shields.io/github/stars/GeekLuffy/neuroscan?style=for-the-badge&logo=github)](https://github.com/GeekLuffy/neuroscan)
