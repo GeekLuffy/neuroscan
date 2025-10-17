@@ -115,32 +115,32 @@ const About: React.FC = () => {
           {/* Team Section */}
           <div className="mt-32">
             <div className="max-w-6xl mx-auto">
-              <h2 className="text-3xl font-bold text-white mb-4 text-center">Our Team</h2>
-              <p className="text-lg text-gray-400 mb-12 text-center">Made with ❤️ by Team ORBIT</p>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                {/* Owais Naeem */}
+              <h2 className="text-3xl font-bold text-white mb-12 text-center">Our Team</h2>
+              <div className="grid md:grid-cols-2 gap-8">
+                {/* Owais naeem */}
                 <Card className="glass-card">
                   <CardHeader className="text-center">
-                    <Avatar className="w-24 h-24 mx-auto mb-4 border-4" style={{ borderColor: `${colors.primary}50` }}>
+                    <Avatar className="w-32 h-32 mx-auto mb-6 border-4" style={{ borderColor: `${colors.primary}50` }}>
                       <AvatarImage src="/owais.png" alt="Owais Naeem" />
                       <AvatarFallback>ON</AvatarFallback>
                     </Avatar>
-                    <CardTitle className={`text-xl font-bold bg-gradient-to-r ${colors.textGradient} bg-clip-text text-transparent`}>
+                    <CardTitle className={`text-3xl font-bold bg-gradient-to-r ${colors.textGradient} bg-clip-text text-transparent`}>
                       Owais Naeem
                     </CardTitle>
-                    <p className="text-sm text-gray-300 mt-1">Leader, Hardware Integration & AI Developer</p>
+                    <p className="text-xl text-gray-300 mt-2">Hardware Integration & AI Developer</p>
                   </CardHeader>
-                  <CardContent className="mt-4 text-sm text-gray-300 space-y-4 text-center">
+                  <CardContent className="mt-6 text-lg text-gray-300 space-y-6 text-center">
                     <p>
-                      Leader & Founder of NeuroScan, leading the entire project vision and development. 
-                      Specializes in machine learning algorithms for neurological analysis, backend development, and medical sensor data processing.
+                      Owais is the co-creator of NeuroScan, leading the backend development and AI integration for the NeuraScan platform. 
+                      He specializes in machine learning algorithms for neurological analysis, backend API development, medical sensor data processing, 
+                      and seamless integration between hardware components and AI systems.
                     </p>
-                    <div className="flex justify-center gap-4 mt-6">
-                      <a href="https://github.com/geekluffy" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-white transition-colors">
-                        <Github className="w-6 h-6" />
+                    <div className="flex justify-center gap-6 mt-8">
+                      <a href="https://github.com/Geekluffy" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-white transition-colors">
+                        <Github className="w-8 h-8" />
                       </a>
-                      <a href="https://www.linkedin.com/in/mohammad-owais-naeem/" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-white transition-colors">
-                        <Linkedin className="w-6 h-6" />
+                      <a href="https://linkedin.com/in/mohammad-owais-naeem" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-white transition-colors">
+                        <Linkedin className="w-8 h-8" />
                       </a>
                     </div>
                   </CardContent>
@@ -149,130 +149,27 @@ const About: React.FC = () => {
                 {/* Himanshu Rathore */}
                 <Card className="glass-card">
                   <CardHeader className="text-center">
-                    <Avatar className="w-24 h-24 mx-auto mb-4 border-4" style={{ borderColor: `${colors.secondary}50` }}>
+                    <Avatar className="w-32 h-32 mx-auto mb-6 border-4" style={{ borderColor: `${colors.secondary}50` }}>
                       <AvatarImage src="/himanshu.png" alt="Himanshu Rathore" />
                       <AvatarFallback>HR</AvatarFallback>
                     </Avatar>
-                    <CardTitle className={`text-xl font-bold bg-gradient-to-r ${colors.textGradient} bg-clip-text text-transparent`}>
+                    <CardTitle className={`text-3xl font-bold bg-gradient-to-r ${colors.textGradient} bg-clip-text text-transparent`}>
                       Himanshu Rathore
                     </CardTitle>
-                    <p className="text-sm text-gray-300 mt-1">Frontend, UX & IoT Developer</p>
+                    <p className="text-xl text-gray-300 mt-2">Frontend, UX & IoT Developer</p>
                   </CardHeader>
-                  <CardContent className="mt-4 text-sm text-gray-300 space-y-4 text-center">
+                  <CardContent className="mt-6 text-lg text-gray-300 space-y-6 text-center">
                     <p>
-                      Co-creator of NeuroScan, leading frontend development and IoT integration. 
-                      Specializes in intuitive user interfaces, medical data visualization, and IoT device communication protocols.
+                      Himanshu is the co-creator of NeuroScan, leading frontend development and IoT integration for the NeuraScan platform. 
+                      He specializes in creating intuitive user interfaces, medical data visualization, IoT device communication protocols, 
+                      and seamless connectivity between the NeuraScan hardware and web platform for real-time monitoring.
                     </p>
-                    <div className="flex justify-center gap-4 mt-6">
+                    <div className="flex justify-center gap-6 mt-8">
                       <a href="https://github.com/himanshu-2l" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-white transition-colors">
-                        <Github className="w-6 h-6" />
+                        <Github className="w-8 h-8" />
                       </a>
                       <a href="https://www.linkedin.com/in/himanshu-rathore21/" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-white transition-colors">
-                        <Linkedin className="w-6 h-6" />
-                      </a>
-                    </div>
-                  </CardContent>
-                </Card>
-
-                {/* Mayank Dindoire */}
-                <Card className="glass-card">
-                  <CardHeader className="text-center">
-                    <Avatar className="w-24 h-24 mx-auto mb-4 border-4" style={{ borderColor: `${colors.primary}50` }}>
-                      <AvatarFallback>MD</AvatarFallback>
-                    </Avatar>
-                    <CardTitle className={`text-xl font-bold bg-gradient-to-r ${colors.textGradient} bg-clip-text text-transparent`}>
-                      Mayank Dindoire
-                    </CardTitle>
-                    <p className="text-sm text-gray-300 mt-1">Team Member</p>
-                  </CardHeader>
-                  <CardContent className="mt-4 text-sm text-gray-300 space-y-4 text-center">
-                    <p>
-                      Contributing to NeuroScan's development with expertise in software engineering and system integration.
-                    </p>
-                    <div className="flex justify-center gap-4 mt-6">
-                      <a href="https://github.com/Mayforhern" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-white transition-colors">
-                        <Github className="w-6 h-6" />
-                      </a>
-                      <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-white transition-colors">
-                        <Linkedin className="w-6 h-6" />
-                      </a>
-                    </div>
-                  </CardContent>
-                </Card>
-
-                {/* Harsh Gupta */}
-                <Card className="glass-card">
-                  <CardHeader className="text-center">
-                    <Avatar className="w-24 h-24 mx-auto mb-4 border-4" style={{ borderColor: `${colors.secondary}50` }}>
-                      <AvatarFallback>HG</AvatarFallback>
-                    </Avatar>
-                    <CardTitle className={`text-xl font-bold bg-gradient-to-r ${colors.textGradient} bg-clip-text text-transparent`}>
-                      Harsh Gupta
-                    </CardTitle>
-                    <p className="text-sm text-gray-300 mt-1">Team Member</p>
-                  </CardHeader>
-                  <CardContent className="mt-4 text-sm text-gray-300 space-y-4 text-center">
-                    <p>
-                      Contributing to NeuroScan's development with expertise in software engineering and system integration.
-                    </p>
-                    <div className="flex justify-center gap-4 mt-6">
-                      <a href="https://github.com" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-white transition-colors">
-                        <Github className="w-6 h-6" />
-                      </a>
-                      <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-white transition-colors">
-                        <Linkedin className="w-6 h-6" />
-                      </a>
-                    </div>
-                  </CardContent>
-                </Card>
-
-                {/* Sonal Dewangan */}
-                <Card className="glass-card">
-                  <CardHeader className="text-center">
-                    <Avatar className="w-24 h-24 mx-auto mb-4 border-4" style={{ borderColor: `${colors.primary}50` }}>
-                      <AvatarFallback>SD</AvatarFallback>
-                    </Avatar>
-                    <CardTitle className={`text-xl font-bold bg-gradient-to-r ${colors.textGradient} bg-clip-text text-transparent`}>
-                      Sonal Dewangan
-                    </CardTitle>
-                    <p className="text-sm text-gray-300 mt-1">Team Member</p>
-                  </CardHeader>
-                  <CardContent className="mt-4 text-sm text-gray-300 space-y-4 text-center">
-                    <p>
-                      Contributing to NeuroScan's development with expertise in software engineering and system integration.
-                    </p>
-                    <div className="flex justify-center gap-4 mt-6">
-                      <a href="https://github.com" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-white transition-colors">
-                        <Github className="w-6 h-6" />
-                      </a>
-                      <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-white transition-colors">
-                        <Linkedin className="w-6 h-6" />
-                      </a>
-                    </div>
-                  </CardContent>
-                </Card>
-
-                {/* Om Pranav Jaiswal */}
-                <Card className="glass-card">
-                  <CardHeader className="text-center">
-                    <Avatar className="w-24 h-24 mx-auto mb-4 border-4" style={{ borderColor: `${colors.secondary}50` }}>
-                      <AvatarFallback>OPJ</AvatarFallback>
-                    </Avatar>
-                    <CardTitle className={`text-xl font-bold bg-gradient-to-r ${colors.textGradient} bg-clip-text text-transparent`}>
-                      Om Pranav Jaiswal
-                    </CardTitle>
-                    <p className="text-sm text-gray-300 mt-1">Team Member</p>
-                  </CardHeader>
-                  <CardContent className="mt-4 text-sm text-gray-300 space-y-4 text-center">
-                    <p>
-                      Contributing to NeuroScan's development with expertise in software engineering and system integration.
-                    </p>
-                    <div className="flex justify-center gap-4 mt-6">
-                      <a href="https://github.com" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-white transition-colors">
-                        <Github className="w-6 h-6" />
-                      </a>
-                      <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-white transition-colors">
-                        <Linkedin className="w-6 h-6" />
+                        <Linkedin className="w-8 h-8" />
                       </a>
                     </div>
                   </CardContent>
